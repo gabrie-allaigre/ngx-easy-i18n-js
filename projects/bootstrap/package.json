@@ -1,0 +1,39 @@
+{
+  "name": "@ngx-easy-i18n-js/bootstrap",
+  "version": "1.0.7",
+  "description": "Bootstrap for ngx-easy-i18n-js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gabrie-allaigre/ngx-easy-i18n-js.git"
+  },
+  "keywords": [
+    "easy",
+    "i18n",
+    "javascript",
+    "browser",
+    "translate",
+    "translator",
+    "localization",
+    "easy-i18n-js",
+    "angular",
+    "ngx-easy-i18n-js"
+  ],
+  "author": "Gabriel Allaigre",
+  "license": "Apache-2",
+  "bugs": {
+    "url": "https://github.com/gabrie-allaigre/ngx-easy-i18n-js/issues"
+  },
+  "homepage": "https://github.com/gabrie-allaigre/ngx-easy-i18n-js#readme",
+  "peerDependencies": {
+    "@angular/cdk": "^14.2.0",
+    "@angular/common": "^14.2.0",
+    "@ngx-easy-i18n-js/core": ">=1.0.0",
+    "rxjs": "~7.5.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
