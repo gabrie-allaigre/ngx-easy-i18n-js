@@ -10,6 +10,7 @@ export const EASY_I18N_OPTIONS = new InjectionToken<EasyI18nOptions>('EASY_I18N_
 export const NG_LOCALES = new InjectionToken<{ [key: string]: any; }>('NG_LOCALES');
 export const USE_BROWSER_LANGUAGE = new InjectionToken<boolean>('USE_BROWSER_LANGUAGE');
 export const DEFAULT_LANGUAGE = new InjectionToken<string>('DEFAULT_LANGUAGE');
+export const FALLBACK_LANGUAGE = new InjectionToken<string>('FALLBACK_LANGUAGE');
 export const ONLY_EXACT_LANGUAGE = new InjectionToken<boolean>('ONLY_EXACT_LANGUAGE');
 
 export type LocaleStatus = 'none' | 'loading' | 'ready';
@@ -61,6 +62,7 @@ export class EasyI18nService implements OnDestroy {
     @Inject(NG_LOCALES) ngLocales: { [key: string]: any; },
     @Inject(USE_BROWSER_LANGUAGE) useBrowserLanguage: boolean,
     @Inject(DEFAULT_LANGUAGE) defaultLanguage: string,
+    @Inject(FALLBACK_LANGUAGE) fallbackLanguage: string,
     @Inject(ONLY_EXACT_LANGUAGE) onlyExactLanguage: boolean,
     private loader: EasyI18nLoader,
   ) {
@@ -77,21 +79,23 @@ export class EasyI18nService implements OnDestroy {
         } else {
           console.warn(`Not found locale data for currentLocale ${culture}`);
 
-          const defaultNgLocale = getPossibleLocales(defaultLanguage).find(l => ngLocales?.[l]);
-          if (defaultNgLocale != null) {
-            console.warn(`Use locale data with ${defaultLanguage}`);
-            registerLocaleData(ngLocales[defaultNgLocale]);
+          if (culture !== (fallbackLanguage ?? defaultLanguage)) {
+            const defaultNgLocale = getPossibleLocales(fallbackLanguage ?? defaultLanguage).find(l => ngLocales?.[l]);
+            if (defaultNgLocale != null) {
+              console.warn(`Use locale data with ${fallbackLanguage ?? defaultLanguage}`);
+              registerLocaleData(ngLocales[defaultNgLocale]);
 
-            this._ngLocale = defaultNgLocale;
-          } else {
-            console.warn(`Not found locale data for defaultLanguage ${defaultLanguage}`);
+              this._ngLocale = defaultNgLocale;
+            } else {
+              console.warn(`Not found locale data for defaultLanguage ${fallbackLanguage ?? defaultLanguage}`);
 
-            this._ngLocale = null;
+              this._ngLocale = null;
+            }
           }
         }
 
-        const locales = onlyExactLanguage ? lodash.compact([culture, defaultLanguage]) : lodash.uniq(
-          [...getPossibleLocales(culture), ...getPossibleLocales(defaultLanguage)]
+        const locales = onlyExactLanguage ? lodash.compact([culture, fallbackLanguage ?? defaultLanguage]) : lodash.uniq(
+          [...getPossibleLocales(culture), ...getPossibleLocales(fallbackLanguage ?? defaultLanguage)]
         );
 
         return forkJoin(

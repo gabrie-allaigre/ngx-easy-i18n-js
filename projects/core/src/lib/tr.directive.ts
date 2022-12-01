@@ -15,7 +15,7 @@ export class TrDirective implements OnDestroy {
         namespace
       };
 
-      this.checkNodes(true);
+      this.render(true);
     }
   }
 
@@ -27,7 +27,7 @@ export class TrDirective implements OnDestroy {
         gender
       };
 
-      this.checkNodes(true);
+      this.render(true);
     }
   }
 
@@ -39,7 +39,7 @@ export class TrDirective implements OnDestroy {
         args
       };
 
-      this.checkNodes(true);
+      this.render(true);
     }
   }
 
@@ -51,7 +51,7 @@ export class TrDirective implements OnDestroy {
         namedArgs
       };
 
-      this.checkNodes(true);
+      this.render(true);
     }
   }
 
@@ -64,7 +64,7 @@ export class TrDirective implements OnDestroy {
     private el: ElementRef<HTMLElement>
   ) {
     this.changes = new MutationObserver(() => {
-      this.checkNodes();
+      this.render();
     });
 
     this.changes.observe(el.nativeElement, {
@@ -78,7 +78,7 @@ export class TrDirective implements OnDestroy {
     this.changes.disconnect();
   }
 
-  private checkNodes(paramsOnly = false): void {
+  private render(paramsOnly = false): void {
     const nodes = this.el.nativeElement.childNodes;
     if (nodes.length > 0) {
       nodes.forEach((node: any) => {

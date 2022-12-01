@@ -12,7 +12,7 @@ export class PluralDirective implements OnDestroy {
     if (value !== this.currentValue) {
       this.currentValue = value;
 
-      this.checkNodes(true);
+      this.render(true);
     }
   }
 
@@ -24,7 +24,7 @@ export class PluralDirective implements OnDestroy {
         namespace
       };
 
-      this.checkNodes(true);
+      this.render(true);
     }
   }
 
@@ -36,7 +36,7 @@ export class PluralDirective implements OnDestroy {
         gender
       };
 
-      this.checkNodes(true);
+      this.render(true);
     }
   }
 
@@ -48,7 +48,7 @@ export class PluralDirective implements OnDestroy {
         args
       };
 
-      this.checkNodes(true);
+      this.render(true);
     }
   }
 
@@ -60,7 +60,7 @@ export class PluralDirective implements OnDestroy {
         namedArgs
       };
 
-      this.checkNodes(true);
+      this.render(true);
     }
   }
 
@@ -72,7 +72,7 @@ export class PluralDirective implements OnDestroy {
         name
       };
 
-      this.checkNodes(true);
+      this.render(true);
     }
   }
 
@@ -84,7 +84,7 @@ export class PluralDirective implements OnDestroy {
         numberFormatterFn
       };
 
-      this.checkNodes(true);
+      this.render(true);
     }
   }
 
@@ -100,7 +100,7 @@ export class PluralDirective implements OnDestroy {
     private el: ElementRef<HTMLElement>
   ) {
     this.changes = new MutationObserver(() => {
-      this.checkNodes();
+      this.render();
     });
 
     this.changes.observe(el.nativeElement, {
@@ -114,7 +114,7 @@ export class PluralDirective implements OnDestroy {
     this.changes.disconnect();
   }
 
-  private checkNodes(paramsOnly = false): void {
+  private render(paramsOnly = false): void {
     const nodes = this.el.nativeElement.childNodes;
     if (nodes.length > 0) {
       nodes.forEach((node: any) => {

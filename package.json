@@ -3,14 +3,15 @@
   "description": "The easy internationalization (i18n) library for Angular",
   "private": true,
   "scripts": {
+    "clean": "rm -Rf dist/ || true",
     "build-core": "ng build @ngx-easy-i18n-js/core",
     "prepublish-core": "npm run build-core",
     "publish-core": "cd dist/core && npm publish",
     "build-http-loader": "ng build @ngx-easy-i18n-js/http-loader",
     "prepublish-http-loader": "npm run build-http-loader",
     "publish-http-loader": "cd dist/http-loader && npm publish",
-    "build": "npm run build-core && npm run build-http-loader",
-    "publish-all": "npm run publish-core && npm run publish-http-loader"
+    "build": "npm run clean && npm run build-core && npm run build-http-loader",
+    "publish-all": "npm run clean && npm run publish-core && npm run publish-http-loader"
   },
   "dependencies": {
     "@angular/animations": "^14.2.0",

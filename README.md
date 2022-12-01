@@ -1,6 +1,8 @@
-# ngx-easy-i18n
+# ngx-easy-i18n-js
 
-Pure version angular for internalization (i18n). Translations are static. If you change language you must refresh the page
+**Pure version angular for internalization (i18n).**
+
+Translations are static. If you change language you must refresh the page or use bootstrap extension.
 
 > Use EasyI18 Js library https://github.com/gabrie-allaigre/easy-i18n-js
 
@@ -40,7 +42,7 @@ imports: [
 ]
 ```
 
-Config
+#### Configuration
 
 ```typescript
 export interface EasyI18nModuleConfig {
@@ -85,7 +87,7 @@ export class MyComponent {
 
 ### Locale pipes
 
-In HTML, use locale pipes
+In HTML, uses locales pipes to get dates, numbers in locale format
 
 | pipe             | description                                    | example                                                                                           |
 |------------------|------------------------------------------------|---------------------------------------------------------------------------------------------------|
@@ -98,6 +100,8 @@ In HTML, use locale pipes
 
 Main function for translate your language keys
 
+#### HTML file
+
 In HTML template, with pipe, parameter is TrOptions
 
 ```angular2html
@@ -106,7 +110,7 @@ In HTML template, with pipe, parameter is TrOptions
 {{ 'My name is {}' | tr: {args: ['Gabriel']} }}
 ```
 
-TrOptions arguments
+**TrOptions arguments**
 
 | Name      | type                                               | example                            |
 |-----------|----------------------------------------------------|------------------------------------|
@@ -115,7 +119,11 @@ TrOptions arguments
 | namespace | `string`                                           | `'common'`                         |
 | gender    | <code>'male' &#124; 'female' &#124; 'other'</code> | `gender: 'other'`                  |
 
-Directive
+**Directives**
+
+There are 2 differents directives
+
+First is simple, translate `[tr]`
 
 | Directive            | description                  | example                                                                            |
 |----------------------|------------------------------|------------------------------------------------------------------------------------|
@@ -125,7 +133,38 @@ Directive
 | `trArgs`             | Arguments                    | <code>&lt;span tr [trArgs]="['Gabriel']"&gt;hello&lt;/span&gt;</code>              |
 | `trNamedArgs`        | Named arguments              | <code>&lt;span tr [trNamedArgs]="{ name: 'Gabriel' }"&gt;hello&lt;/span&gt;</code> |
 
+Second, use HTML named arguments `[trContent]`, replace `{namedArg}` with child element `*trElement`
+
+| Directive     | description                                    | 
+|---------------|------------------------------------------------|
+| `trContent`   | Active content directive translate, get a key  |
+| `trNamespace` | Add namespace                                  |
+| `trGender`    | Gender                                         |
+| `trArgs`      | Arguments                                      |
+| `trNamedArgs` | Named arguments                                |
+| `demarc`      | Change token start, end identifier             |
+
+**Examples**
+
+```angular2html
+<!-- "hello_name": "My name is {name}" -->
+<div trContent="hello_name">
+    <span *trElement="'name'" style="color: red; font-size: 2rem; font-weight: bold">Gabriel</span>
+</div>
+```
+
+```angular2html
+<div trContent="My name is {name} and I live in {country}" style="color: blue;">
+    <span *trElement="'name'" style="color: red; font-size: 2rem; font-weight: bold">Gabriel</span>
+    <span *trElement="'country'">{{ var_country }}</span>
+</div>
+```
+
+#### Typescript file
+
 You can use extension methods of [String], you can also use tr() as a static function.
+
+In typescript file, **there is no need to inject EasyI18nService**
 
 ```typescript
 'hello'.tr();
@@ -138,6 +177,8 @@ tr('hello_with_genre', { gender: 'male' });
 
 You can translate with pluralization. To insert a number in the translated string, use {}.
 
+#### HTML file
+
 In HTML template, with pipe, first parameter is number and second PluralOptions
 
 ```angular2html
@@ -145,7 +186,7 @@ In HTML template, with pipe, first parameter is number and second PluralOptions
 {{ 'money_with_args' | plural:3: {args: ['Gabriel']} }}
 ```
 
-PluralOptions arguments
+**PluralOptions arguments**
 
 | Name              | type                                               | example                            |
 |-------------------|----------------------------------------------------|------------------------------------|
@@ -156,7 +197,11 @@ PluralOptions arguments
 | numberFormatterFn | `(value: number) => string`                        | `(value) => value.Precision(3)`    |
 | gender            | <code>'male' &#124; 'female' &#124; 'other'</code> | `gender: 'other'`                  |
 
-Directive
+**Directives**
+
+There are 2 different directives
+
+First is simple, translate plural `[plural]`
 
 | Directive                  | description                | example                                                                                           |
 |----------------------------|----------------------------|---------------------------------------------------------------------------------------------------|
@@ -168,7 +213,41 @@ Directive
 | `pluralName`               | Name value                 | <code>&lt;span [plural]="4" pluralName="value"&gt;money&lt;/span&gt;</code>                       |
 | `pluralNumberFormatterFn`  | Formatter function         | <code>&lt;span [plural]="10000" [pluralNumberFormatterFn]="myFn"&gt;money&lt;/span&gt;</code>     |
 
+Second, use HTML named arguments `[pluralContent]`, replace `{namedArg}` with child element `*pluralElement`
+
+| Directive                 | description                                     | 
+|---------------------------|-------------------------------------------------|
+| `pluralContent`           | Active content directive translate, get a key   |
+| `pluralValue`             | Active content directive translate, get a value |
+| `pluralNamespace`         | Add namespace                                   |
+| `pluralGender`            | Gender                                          |
+| `pluralArgs`              | Arguments                                       |
+| `pluralNamedArgs`         | Named arguments                                 |
+| `pluralName`              | Name value                                      |
+| `pluralNumberFormatterFn` | Formatter function                              |
+| `demarc`                  | Change token start, end identifier              |
+
+**Examples**
+
+```angular2html
+<!-- "money_content": { 
+    "zero": "{name} not have money",
+    "one": "{name} have {money} dollar",
+    "two": "{name} have {money} dollars",
+    "many": "{name} have {money} dollars",
+    "other": "{name} have {money} dollars"
+} -->
+<div pluralContent="money_content" [pluralValue]="var_money" class="fst-italic text-gray-500">
+    <span *pluralElement="'name'" style="color: red; font-size: 2rem; font-weight: bold">Gabriel</span>
+    <span *pluralElement="'money'" style="color: blueviolet; font-weight: bold" [style.font-size]="(var_money / 10) + 'vw'">{{ var_money }}</span>
+</div>
+```
+
+#### Typescript file
+
 You can use extension methods of [String], you can also use plural() as a static function.
+
+In typescript file, **there is no need to inject EasyI18nService**
 
 ```typescript
 'money_args'.plural(0, { args: ['Gabriel'] });

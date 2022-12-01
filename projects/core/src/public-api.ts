@@ -12,11 +12,14 @@ import {
   DEFAULT_LANGUAGE,
   EASY_I18N_OPTIONS,
   EasyI18nService,
+  FALLBACK_LANGUAGE,
   NG_LOCALES,
   ONLY_EXACT_LANGUAGE,
   USE_BROWSER_LANGUAGE
 } from './lib/easy-i18n.service';
 import { EasyI18nLoader, EmptyEasyI18nLoader } from './lib/easy-i18n.loader';
+import { PluralContentDirective, PluralElementDirective } from './lib/plural-content.directive';
+import { TrContentDirective, TrElementDirective } from './lib/tr-content.directive';
 
 export * from './lib/locale-date.pipe';
 export * from './lib/locale-number.pipe';
@@ -25,7 +28,9 @@ export * from './lib/locale-currency.pipe';
 export * from './lib/tr.pipe';
 export * from './lib/plural.pipe';
 export * from './lib/tr.directive';
+export * from './lib/tr-content.directive';
 export * from './lib/plural.directive';
+export * from './lib/plural-content.directive';
 export * from './lib/easy-i18n.loader';
 export * from './lib/easy-i18n.service';
 
@@ -47,9 +52,13 @@ export interface EasyI18nModuleConfig {
    */
   useBrowserLanguage?: boolean;
   /**
-   * Default fallback language use if current language not found
+   * Default language use if no use browser language
    */
   defaultLanguage?: string;
+  /**
+   * Fallback language use if current language not found
+   */
+  fallbackLanguage?: string;
   /**
    * Use exact language (default false) if false, fr-FR and fr
    */
@@ -65,7 +74,11 @@ export interface EasyI18nModuleConfig {
     PluralPipe,
     PluralDirective,
     LocalePecentPipe,
-    LocaleCurrencyPipe
+    LocaleCurrencyPipe,
+    PluralElementDirective,
+    PluralContentDirective,
+    TrElementDirective,
+    TrContentDirective
   ],
   exports: [
     LocaleDatePipe,
@@ -75,7 +88,11 @@ export interface EasyI18nModuleConfig {
     PluralPipe,
     PluralDirective,
     LocalePecentPipe,
-    LocaleCurrencyPipe
+    LocaleCurrencyPipe,
+    PluralElementDirective,
+    PluralContentDirective,
+    TrElementDirective,
+    TrContentDirective
   ]
 })
 export class EasyI18nModule {
@@ -92,6 +109,7 @@ export class EasyI18nModule {
         { provide: NG_LOCALES, useValue: config.ngLocales },
         { provide: USE_BROWSER_LANGUAGE, useValue: config.useBrowserLanguage ?? true },
         { provide: DEFAULT_LANGUAGE, useValue: config.defaultLanguage ?? 'en-US' },
+        { provide: FALLBACK_LANGUAGE, useValue: config.fallbackLanguage },
         { provide: ONLY_EXACT_LANGUAGE, useValue: config.onlyExactLanguage ?? false },
         EasyI18nService
       ]
