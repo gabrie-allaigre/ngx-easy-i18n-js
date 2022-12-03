@@ -1,6 +1,6 @@
 {
   "name": "@ngx-easy-i18n-js/http-loader",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Http loader for ngx-easy-i18n-js",
   "repository": {
     "type": "git",
@@ -32,6 +32,7 @@
     "rxjs": "~7.5.0"
   },
   "dependencies": {
+    "lodash": "^4.17.21",
     "tslib": "^2.3.0"
   },
   "publishConfig": {

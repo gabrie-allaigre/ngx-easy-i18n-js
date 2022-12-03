@@ -1,13 +1,15 @@
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { catchError, forkJoin, Observable, of } from 'rxjs';
 import { EasyI18nMessages } from 'easy-i18n-js';
 import { EasyI18nLoader } from '@ngx-easy-i18n-js/core';
+import * as lodash from 'lodash';
+import { map } from 'rxjs/operators';
 
 export interface IOptions {
   /**
-   * Url prefix, default '/assets/i18n/'
+   * Url prefix, default '/assets/i18n/' or Array of prefix
    */
-  prefix?: string;
+  prefix?: string | string[];
   /**
    * Url suffix, default '.json'
    */
@@ -36,6 +38,17 @@ export class HttpEasyI18nLoader extends EasyI18nLoader {
    * @param locale
    */
   getMessages(locale: string): Observable<EasyI18nMessages> {
+    if (lodash.isArray(this.options.prefix)) {
+      return forkJoin(
+        this.options.prefix.map(prefix =>
+          this.httpClient.get<EasyI18nMessages>(`${prefix ?? ''}${locale}${this.options.suffix ?? ''}`).pipe(
+            catchError(() => of({}))
+          )
+        )
+      ).pipe(
+        map(res => lodash.defaultsDeep({}, ...lodash.compact(res))),
+      );
+    }
     return this.httpClient.get<EasyI18nMessages>(`${this.options.prefix ?? ''}${locale}${this.options.suffix ?? ''}`);
   }
 }
