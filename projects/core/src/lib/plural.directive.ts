@@ -8,7 +8,16 @@ import { plural, PluralOptions } from 'easy-i18n-js';
 export class PluralDirective implements OnDestroy {
 
   @Input('plural')
-  set plural(value: number) {
+  set plural(key: string) {
+    if (key !== this.currentKey) {
+      this.currentKey = key;
+
+      this.render(true);
+    }
+  }
+
+  @Input()
+  set pluralValue(value: number) {
     if (value !== this.currentValue) {
       this.currentValue = value;
 
@@ -88,6 +97,8 @@ export class PluralDirective implements OnDestroy {
     }
   }
 
+  private currentKey?: string;
+
   private currentValue?: number;
   private lastValue?: number;
 
@@ -119,20 +130,25 @@ export class PluralDirective implements OnDestroy {
     if (nodes.length > 0) {
       nodes.forEach((node: any) => {
         if (node.nodeType === 3) { // Seulement les node de type 3, text
-          const content = this.getContent(node);
-          let key: string | null = null;
+          // Si une clef a été définie, on l'utilise
+          if (this.currentKey) {
+            this.updateValue(this.currentKey, node);
+          } else {
+            const content = this.getContent(node);
+            let key: string | null = null;
 
-          // Si le contenu actuel est différent de la valeur traduite, la clef a changé
-          if (content !== node.currentValue) {
-            key = content.trim();
-            // On stocke la valeur originale qui doit ête la clef
-            node.originalContent = content ?? node.originalContent;
-          } else if (node.originalContent && paramsOnly) { // Le contenu actuel est la version traduite, si on a l'original
-            // On prend la clef originale et on va vérifier si un paramètre a changé
-            key = node.originalContent.trim();
-          }
-          if (key) {
-            this.updateValue(key, node);
+            // Si le contenu actuel est différent de la valeur traduite, la clef a changé
+            if (content !== node.currentValue) {
+              key = content.trim();
+              // On stocke la valeur originale qui doit ête la clef
+              node.originalContent = content ?? node.originalContent;
+            } else if (node.originalContent && paramsOnly) { // Le contenu actuel est la version traduite, si on a l'original
+              // On prend la clef originale et on va vérifier si un paramètre a changé
+              key = node.originalContent.trim();
+            }
+            if (key) {
+              this.updateValue(key, node);
+            }
           }
         }
       });

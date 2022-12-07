@@ -11,17 +11,26 @@ export const NG_LOCALES = new InjectionToken<{ [key: string]: any; }>('NG_LOCALE
 export const USE_BROWSER_LANGUAGE = new InjectionToken<boolean>('USE_BROWSER_LANGUAGE');
 export const DEFAULT_LANGUAGE = new InjectionToken<string>('DEFAULT_LANGUAGE');
 export const FALLBACK_LANGUAGE = new InjectionToken<string>('FALLBACK_LANGUAGE');
-export const ONLY_EXACT_LANGUAGE = new InjectionToken<boolean>('ONLY_EXACT_LANGUAGE');
+export const DISCOVER = new InjectionToken<string>('DISCOVER');
 
 export type LocaleStatus = 'none' | 'loading' | 'ready';
 
 const cultureRegex = new RegExp('^([a-z]{2,3})(?:-([A-Z]{2,3})(?:-([a-zA-Z]{4}))?)?$');
 
-function getPossibleLocales(culture: string | undefined): string[] {
+function getPossibleLocales(culture: string | undefined, discover: 'exact' | 'minimum' | 'all'): string[] {
   if (!culture) {
     return [];
   }
+
+  if (discover === 'exact') {
+    return [culture];
+  }
   const match = culture.match(cultureRegex);
+
+  if (discover === 'minimum') {
+    return lodash.compact([match?.[1]]);
+  }
+
   return lodash.compact(lodash.uniq([match?.[0], lodash.compact([match?.[1], match?.[2]]).join('-'), match?.[1]]));
 }
 
@@ -63,7 +72,7 @@ export class EasyI18nService implements OnDestroy {
     @Inject(USE_BROWSER_LANGUAGE) useBrowserLanguage: boolean,
     @Inject(DEFAULT_LANGUAGE) defaultLanguage: string,
     @Inject(FALLBACK_LANGUAGE) fallbackLanguage: string,
-    @Inject(ONLY_EXACT_LANGUAGE) onlyExactLanguage: boolean,
+    @Inject(DISCOVER) discover: 'exact' | 'minimum' | 'all',
     private loader: EasyI18nLoader,
   ) {
     installEasyI18n(options);
@@ -71,7 +80,7 @@ export class EasyI18nService implements OnDestroy {
     this.subscription = this._localeSubject.asObservable().pipe(
       tap(() => this._localeStatusSubject.next('loading')),
       switchMap(culture => {
-        const ngLocale = getPossibleLocales(culture).find(l => ngLocales?.[l]);
+        const ngLocale = getPossibleLocales(culture, 'all').find(l => ngLocales?.[l]);
         if (ngLocale != null) {
           registerLocaleData(ngLocales[ngLocale]);
 
@@ -80,7 +89,7 @@ export class EasyI18nService implements OnDestroy {
           console.warn(`Not found locale data for currentLocale ${culture}`);
 
           if (culture !== (fallbackLanguage ?? defaultLanguage)) {
-            const defaultNgLocale = getPossibleLocales(fallbackLanguage ?? defaultLanguage).find(l => ngLocales?.[l]);
+            const defaultNgLocale = getPossibleLocales(fallbackLanguage ?? defaultLanguage, 'all').find(l => ngLocales?.[l]);
             if (defaultNgLocale != null) {
               console.warn(`Use locale data with ${fallbackLanguage ?? defaultLanguage}`);
               registerLocaleData(ngLocales[defaultNgLocale]);
@@ -94,8 +103,8 @@ export class EasyI18nService implements OnDestroy {
           }
         }
 
-        const locales = onlyExactLanguage ? lodash.compact([culture, fallbackLanguage ?? defaultLanguage]) : lodash.uniq(
-          [...getPossibleLocales(culture), ...getPossibleLocales(fallbackLanguage ?? defaultLanguage)]
+        const locales = lodash.uniq(
+          [...getPossibleLocales(culture, discover), ...getPossibleLocales(fallbackLanguage ?? defaultLanguage, discover)]
         );
 
         return forkJoin(

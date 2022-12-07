@@ -14,7 +14,7 @@ import {
   EasyI18nService,
   FALLBACK_LANGUAGE,
   NG_LOCALES,
-  ONLY_EXACT_LANGUAGE,
+  DISCOVER,
   USE_BROWSER_LANGUAGE
 } from './lib/easy-i18n.service';
 import { EasyI18nLoader, EmptyEasyI18nLoader } from './lib/easy-i18n.loader';
@@ -60,9 +60,9 @@ export interface EasyI18nModuleConfig {
    */
   fallbackLanguage?: string;
   /**
-   * Use exact language (default false) if false, fr-FR and fr
+   * <code>exact</code> only fr-FR, <code>minimum</code> only fr, <code>all</code> fr-FR and fr
    */
-  onlyExactLanguage?: boolean;
+  discover?: 'exact' | 'minimum' | 'all';
 }
 
 @NgModule({
@@ -110,7 +110,7 @@ export class EasyI18nModule {
         { provide: USE_BROWSER_LANGUAGE, useValue: config.useBrowserLanguage ?? true },
         { provide: DEFAULT_LANGUAGE, useValue: config.defaultLanguage ?? 'en-US' },
         { provide: FALLBACK_LANGUAGE, useValue: config.fallbackLanguage },
-        { provide: ONLY_EXACT_LANGUAGE, useValue: config.onlyExactLanguage ?? false },
+        { provide: DISCOVER, useValue: config.discover ?? 'all' },
         EasyI18nService
       ]
     };
