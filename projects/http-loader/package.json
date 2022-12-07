@@ -1,6 +1,6 @@
 {
   "name": "@ngx-easy-i18n-js/http-loader",
-  "version": "1.0.9",
+  "version": "15.0.0",
   "description": "Http loader for ngx-easy-i18n-js",
   "repository": {
     "type": "git",
@@ -28,8 +28,8 @@
   "peerDependencies": {
     "easy-i18n-js": "^1.0.4",
     "@ngx-easy-i18n-js/core": ">=1.0.0",
-    "@angular/common": "^14.2.0",
-    "rxjs": "~7.5.0"
+    "@angular/common": "^15.0.2",
+    "rxjs": "^7.5.0"
   },
   "dependencies": {
     "lodash": "^4.17.21",

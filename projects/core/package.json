@@ -1,6 +1,6 @@
 {
   "name": "@ngx-easy-i18n-js/core",
-  "version": "1.0.9",
+  "version": "15.0.0",
   "description": "The easy internationalization (i18n) library for Angular",
   "repository": {
     "type": "git",
@@ -25,9 +25,9 @@
   },
   "homepage": "https://github.com/gabrie-allaigre/ngx-easy-i18n-js#readme",
   "peerDependencies": {
-    "@angular/core": "^14.2.0",
+    "@angular/core": "^15.0.2",
     "easy-i18n-js": "^1.0.4",
-    "rxjs": "~7.5.0"
+    "rxjs": "^7.5.0"
   },
   "dependencies": {
     "lodash": "^4.17.21",
