@@ -126,36 +126,32 @@ export class PluralDirective implements OnDestroy {
   }
 
   private render(paramsOnly = false): void {
-    const nodes = this.el.nativeElement.childNodes;
-    if (nodes.length > 0) {
+    const nodes: NodeList = this.el.nativeElement.childNodes;
+
+    if (this.currentKey) {
+      this.updateValue(this.currentKey, this.el.nativeElement);
+    } else {
       nodes.forEach((node: any) => {
         if (node.nodeType === 3) { // Seulement les node de type 3, text
-          // Si une clef a été définie, on l'utilise
-          if (this.currentKey) {
-            this.updateValue(this.currentKey, node, false);
-          } else {
-            const content = this.getContent(node);
-            let key: string | null = null;
-
-            // Si le contenu actuel est différent de la valeur traduite, la clef a changé
-            if (content !== node.currentValue) {
-              key = content.trim();
-              // On stocke la valeur originale qui doit ête la clef
-              node.originalContent = content ?? node.originalContent;
-            } else if (node.originalContent && paramsOnly) { // Le contenu actuel est la version traduite, si on a l'original
-              // On prend la clef originale et on va vérifier si un paramètre a changé
-              key = node.originalContent.trim();
-            }
-            if (key) {
-              this.updateValue(key, node, true);
-            }
+          let key: string | null = null;
+          const content = this.getContent(node);
+          // Si le contenu actuel est différent de la valeur traduite, la clef a changé
+          if (content !== node.currentValue) {
+            key = content.trim();
+            // On stocke la valeur originale qui doit ête la clef
+            node.originalContent = content ?? node.originalContent;
+          } else if (node.originalContent && paramsOnly) { // Le contenu actuel est la version traduite, si on a l'original
+            // On prend la clef originale et on va vérifier si un paramètre a changé
+            key = node.originalContent.trim();
           }
+
+          this.updateValue(key, node);
         }
       });
     }
   }
 
-  private updateValue(key: string, node: any, useContent: boolean): void {
+  private updateValue(key: string | null, node: any): void {
     if (!key) {
       return;
     }
@@ -174,8 +170,14 @@ export class PluralDirective implements OnDestroy {
     }
 
     const res = this.currentValue != null ? plural(key, this.currentValue, this.currentParams) : '';
+
+    // Même clef, donc non traduit
+    if (this.currentKey && res === key) {
+      return;
+    }
+
     node.currentValue = res ?? node.originalContent ?? key;
-    this.setContent(node, useContent ? node.originalContent.replace(key, node.currentValue) : node.currentValue);
+    this.setContent(node, this.currentKey ? node.currentValue : node.originalContent.replace(key, node.currentValue));
   }
 
   private getContent(node: any): string {

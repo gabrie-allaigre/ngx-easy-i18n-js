@@ -90,36 +90,36 @@ export class TrDirective implements OnDestroy {
   }
 
   private render(paramsOnly = false): void {
-    const nodes = this.el.nativeElement.childNodes;
-    if (nodes.length > 0) {
-      nodes.forEach((node: any) => {
-        if (node.nodeType === 3) { // Seulement les node de type 3, text
-          // Si une clef a été définie, on l'utilise
-          if (this.currentKey) {
-            this.updateValue(this.currentKey, node, false);
-          } else {
-            const content = this.getContent(node);
-            let key: string | null = null;
+    const nodes: NodeList = this.el.nativeElement.childNodes;
 
-            // Si le contenu actuel est différent de la valeur traduite, la clef a changé
-            if (content !== node.currentValue) {
-              key = content.trim();
-              // On stocke la valeur originale qui doit ête la clef
-              node.originalContent = content ?? node.originalContent;
-            } else if (node.originalContent && paramsOnly) { // Le contenu actuel est la version traduite, si on a l'original
-              // On prend la clef originale et on va vérifier si un paramètre a changé
-              key = node.originalContent.trim();
-            }
-            if (key) {
-              this.updateValue(key, node, true);
-            }
+    nodes.forEach((node: any) => {
+      if (node.nodeType === 3) { // Seulement les node de type 3, text
+        if (node.lookupKey != null) {
+          this.updateValue(node.lookupKey, node);
+        } else if (this.currentKey != null) {
+          this.updateValue(this.currentKey, this.el.nativeElement);
+        } else {
+          let key: string | null = null;
+          const content = this.getContent(node);
+          node.lookupKey = content.trim();
+
+          // Si le contenu actuel est différent de la valeur traduite, la clef a changé
+          if (content !== node.currentValue) {
+            key = node.lookupKey;
+            // On stocke la valeur originale qui doit ête la clef
+            node.originalContent = content ?? node.originalContent;
+          } else if (node.originalContent && paramsOnly) { // Le contenu actuel est la version traduite, si on a l'original
+            // On prend la clef originale et on va vérifier si un paramètre a changé
+            key = node.originalContent.trim();
           }
+
+          this.updateValue(key, node);
         }
-      });
-    }
+      }
+    });
   }
 
-  private updateValue(key: string, node: any, useContent: boolean): void {
+  private updateValue(key: string | null, node: any): void {
     if (!key) {
       return;
     }
@@ -137,8 +137,13 @@ export class TrDirective implements OnDestroy {
     }
 
     const res = tr(key, this.currentParams);
+
+    if (this.currentKey && res === key) {
+      return;
+    }
+
     node.currentValue = res ?? node.originalContent ?? key;
-    this.setContent(node, useContent ? node.originalContent.replace(key, node.currentValue) : node.currentValue);
+    this.setContent(node, this.currentKey ? node.currentValue : node.originalContent.replace(key, node.currentValue));
   }
 
   private getContent(node: any): string {
