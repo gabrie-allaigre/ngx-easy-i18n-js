@@ -56,8 +56,8 @@ export interface EasyI18nModuleConfig {
   useBrowserLanguage?: boolean;
   // Default fallback language use if current language not found
   defaultLanguage?: string;
-  // Use exact language (default false) if false, fr-FR and fr
-  onlyExactLanguage?: boolean;
+  // <code>exact</code> only fr-FR, <code>minimum</code> only fr, <code>all</code> fr-FR and fr
+  discover?: 'exact' | 'minimum' | 'all';
 }
 ```
 

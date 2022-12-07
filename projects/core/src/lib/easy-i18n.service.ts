@@ -129,7 +129,9 @@ export class EasyI18nService implements OnDestroy {
 
     const browserCulture = this.getBrowserCulture();
     if (browserCulture) {
-      this.registerCulture(browserCulture);
+      const res = getPossibleLocales(browserCulture, discover);
+
+      this.registerCulture(res?.[0] ?? browserCulture);
     } else if (defaultLanguage) {
       this.registerCulture(defaultLanguage);
     }
