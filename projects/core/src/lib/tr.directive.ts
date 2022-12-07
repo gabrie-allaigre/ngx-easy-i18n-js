@@ -138,7 +138,7 @@ export class TrDirective implements OnDestroy {
 
     const res = tr(key, this.currentParams);
     node.currentValue = res ?? node.originalContent ?? key;
-    this.setContent(node, node.originalContent.replace(key, node.currentValue));
+    this.setContent(node, useContent ? node.originalContent.replace(key, node.currentValue) : node.currentValue);
   }
 
   private getContent(node: any): string {

@@ -1,6 +1,6 @@
 {
   "name": "@ngx-easy-i18n-js/http-loader",
-  "version": "15.0.2",
+  "version": "15.0.3",
   "description": "Http loader for ngx-easy-i18n-js",
   "repository": {
     "type": "git",
