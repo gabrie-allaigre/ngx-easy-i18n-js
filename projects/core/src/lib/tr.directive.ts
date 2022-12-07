@@ -7,8 +7,8 @@ import { tr, TrOptions } from 'easy-i18n-js';
 })
 export class TrDirective implements OnDestroy {
 
-  @Input('tr')
-  set tr(key: string) {
+  @Input()
+  set trKey(key: string) {
     if (key !== this.currentKey) {
       this.currentKey = key;
 
@@ -96,7 +96,7 @@ export class TrDirective implements OnDestroy {
         if (node.nodeType === 3) { // Seulement les node de type 3, text
           // Si une clef a été définie, on l'utilise
           if (this.currentKey) {
-            this.updateValue(this.currentKey, node);
+            this.updateValue(this.currentKey, node, false);
           } else {
             const content = this.getContent(node);
             let key: string | null = null;
@@ -111,7 +111,7 @@ export class TrDirective implements OnDestroy {
               key = node.originalContent.trim();
             }
             if (key) {
-              this.updateValue(key, node);
+              this.updateValue(key, node, true);
             }
           }
         }
@@ -119,7 +119,7 @@ export class TrDirective implements OnDestroy {
     }
   }
 
-  private updateValue(key: string, node: any): void {
+  private updateValue(key: string, node: any, useContent: boolean): void {
     if (!key) {
       return;
     }

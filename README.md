@@ -125,13 +125,14 @@ There are 2 differents directives
 
 First is simple, translate `[tr]`
 
-| Directive            | description                  | example                                                                            |
-|----------------------|------------------------------|------------------------------------------------------------------------------------|
-| `tr`                 | Active directive translate   | <code>&lt;span tr&gt;hello&lt;/span&gt;</code>                                     |
-| `trNamespace`        | Add namespace                | <code>&lt;span tr trNamespace="common"&gt;hello&lt;/span&gt;</code>                |
-| `trGender`           | Gender                       | <code>&lt;span tr trGender="male"&gt;hello_with_genre&lt;/span&gt;</code>          |
-| `trArgs`             | Arguments                    | <code>&lt;span tr [trArgs]="['Gabriel']"&gt;hello&lt;/span&gt;</code>              |
-| `trNamedArgs`        | Named arguments              | <code>&lt;span tr [trNamedArgs]="{ name: 'Gabriel' }"&gt;hello&lt;/span&gt;</code> |
+| Directive     | description                    | example                                                                            |
+|---------------|--------------------------------|------------------------------------------------------------------------------------|
+| `tr`          | Active directive translate     | <code>&lt;span tr&gt;hello&lt;/span&gt;</code>                                     |
+| `trNamespace` | Add namespace                  | <code>&lt;span tr trNamespace="common"&gt;hello&lt;/span&gt;</code>                |
+| `trKey`       | Set key (if empty use content) | <code>&lt;span tr trKey="hello" trNamespace="common"&gt;&lt;/span&gt;</code>              |
+| `trGender`    | Gender                         | <code>&lt;span tr trGender="male"&gt;hello_with_genre&lt;/span&gt;</code>          |
+| `trArgs`      | Arguments                      | <code>&lt;span tr [trArgs]="['Gabriel']"&gt;hello&lt;/span&gt;</code>              |
+| `trNamedArgs` | Named arguments                | <code>&lt;span tr [trNamedArgs]="{ name: 'Gabriel' }"&gt;hello&lt;/span&gt;</code> |
 
 Second, use HTML named arguments `[trContent]`, replace `{namedArg}` with child element `*trElement`
 
@@ -203,15 +204,16 @@ There are 2 different directives
 
 First is simple, translate plural `[plural]`
 
-| Directive                  | description                | example                                                                                           |
-|----------------------------|----------------------------|---------------------------------------------------------------------------------------------------|
-| `plural`                   | Active directive translate | <code>&lt;span [plural]="10"&gt;money&lt;/span&gt;</code>                                         |
-| `pluralNamespace`          | Add namespace              | <code>&lt;span [plural]="100" pluralNamespace="common"&gt;money&lt;/span&gt;</code>               |
-| `pluralGender`             | Gender                     | <code>&lt;span [plural]="1" pluralGender="male"&gt;money_with_genre&lt;/span&gt;</code>           |
-| `pluralArgs`               | Arguments                  | <code>&lt;span [plural]="5" [pluralArgs]="['Gabriel']"&gt;money&lt;/span&gt;</code>               |
-| `pluralNamedArgs`          | Named arguments            | <code>&lt;span [plural]="13" [pluralNamedArgs]="{ name: 'Gabriel' }"&gt;money&lt;/span&gt;</code> |
-| `pluralName`               | Name value                 | <code>&lt;span [plural]="4" pluralName="value"&gt;money&lt;/span&gt;</code>                       |
-| `pluralNumberFormatterFn`  | Formatter function         | <code>&lt;span [plural]="10000" [pluralNumberFormatterFn]="myFn"&gt;money&lt;/span&gt;</code>     |
+| Directive                 | description                    | example                                                                                               |
+|---------------------------|--------------------------------|-------------------------------------------------------------------------------------------------------|
+| `plural`                  | Active directive translate     | <code>&lt;span [plural]="10"&gt;money&lt;/span&gt;</code>                                             |
+| `pluralNamespace`         | Add namespace                  | <code>&lt;span [plural]="100" pluralNamespace="common"&gt;money&lt;/span&gt;</code>                   |
+| `pluralKey`               | Set key (if empty use content) | <code>&lt;span [plural]="100" pluralKey="money" pluralNamespace="common"&gt;&lt;/span&gt;</code> |
+| `pluralGender`            | Gender                         | <code>&lt;span [plural]="1" pluralGender="male"&gt;money_with_genre&lt;/span&gt;</code>               |
+| `pluralArgs`              | Arguments                      | <code>&lt;span [plural]="5" [pluralArgs]="['Gabriel']"&gt;money&lt;/span&gt;</code>                   |
+| `pluralNamedArgs`         | Named arguments                | <code>&lt;span [plural]="13" [pluralNamedArgs]="{ name: 'Gabriel' }"&gt;money&lt;/span&gt;</code>     |
+| `pluralName`              | Name value                     | <code>&lt;span [plural]="4" pluralName="value"&gt;money&lt;/span&gt;</code>                           |
+| `pluralNumberFormatterFn` | Formatter function             | <code>&lt;span [plural]="10000" [pluralNumberFormatterFn]="myFn"&gt;money&lt;/span&gt;</code>         |
 
 Second, use HTML named arguments `[pluralContent]`, replace `{namedArg}` with child element `*pluralElement`
 

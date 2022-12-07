@@ -8,18 +8,18 @@ import { plural, PluralOptions } from 'easy-i18n-js';
 export class PluralDirective implements OnDestroy {
 
   @Input('plural')
-  set plural(key: string) {
-    if (key !== this.currentKey) {
-      this.currentKey = key;
+  set plural(value: number) {
+    if (value !== this.currentValue) {
+      this.currentValue = value;
 
       this.render(true);
     }
   }
 
   @Input()
-  set pluralValue(value: number) {
-    if (value !== this.currentValue) {
-      this.currentValue = value;
+  set pluralKey(key: string) {
+    if (key !== this.currentKey) {
+      this.currentKey = key;
 
       this.render(true);
     }
@@ -132,7 +132,7 @@ export class PluralDirective implements OnDestroy {
         if (node.nodeType === 3) { // Seulement les node de type 3, text
           // Si une clef a été définie, on l'utilise
           if (this.currentKey) {
-            this.updateValue(this.currentKey, node);
+            this.updateValue(this.currentKey, node, false);
           } else {
             const content = this.getContent(node);
             let key: string | null = null;
@@ -147,7 +147,7 @@ export class PluralDirective implements OnDestroy {
               key = node.originalContent.trim();
             }
             if (key) {
-              this.updateValue(key, node);
+              this.updateValue(key, node, true);
             }
           }
         }
@@ -155,7 +155,7 @@ export class PluralDirective implements OnDestroy {
     }
   }
 
-  private updateValue(key: string, node: any): void {
+  private updateValue(key: string, node: any, useContent: boolean): void {
     if (!key) {
       return;
     }
@@ -175,7 +175,7 @@ export class PluralDirective implements OnDestroy {
 
     const res = this.currentValue != null ? plural(key, this.currentValue, this.currentParams) : '';
     node.currentValue = res ?? node.originalContent ?? key;
-    this.setContent(node, node.originalContent.replace(key, node.currentValue));
+    this.setContent(node, useContent ? node.originalContent.replace(key, node.currentValue) : node.currentValue);
   }
 
   private getContent(node: any): string {
