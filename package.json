@@ -10,8 +10,11 @@
     "build-http-loader": "ng build @ngx-easy-i18n-js/http-loader",
     "prepublish-http-loader": "npm run build-http-loader",
     "publish-http-loader": "cd dist/http-loader && npm publish",
-    "build": "npm run clean && npm run build-core && npm run build-http-loader",
-    "publish-all": "npm run clean && npm run publish-core && npm run publish-http-loader"
+    "build-bootstrap": "ng build @ngx-easy-i18n-js/bootstrap",
+    "prepublish-bootstrap": "npm run build-bootstrap",
+    "publish-bootstrap": "cd dist/bootstrap && npm publish",
+    "build": "npm run clean && npm run build-core && npm run build-http-loader && npm run build-bootstrap",
+    "publish-all": "npm run clean && npm run publish-core && npm run publish-http-loader && npm run publish-bootstrap"
   },
   "dependencies": {
     "@angular/animations": "^15.0.2",
@@ -23,7 +26,7 @@
     "@angular/platform-browser": "^15.0.2",
     "@angular/platform-browser-dynamic": "^15.0.2",
     "@angular/router": "^15.0.2",
-    "easy-i18n-js": "^1.0.4",
+    "easy-i18n-js": "^1.0.6",
     "lodash": "^4.17.21",
     "rxjs": "^7.6.0",
     "tslib": "^2.3.0",

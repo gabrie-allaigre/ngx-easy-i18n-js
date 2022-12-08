@@ -288,6 +288,13 @@ new HttpEasyI18nLoader(httpClient, {
 });
 ```
 
+```typescript
+new HttpEasyI18nLoader(httpClient, {
+  prefix: ['assets/common/i18n', 'assets/i18n'],
+  suffix: '.json5'
+});
+```
+
 ## Add Bootstrap (not deployed)
 
 Bootstrap application, refresh application when locale change
@@ -304,6 +311,19 @@ Usage
 imports: [
   EasyI18nBootstrapModule.forRoot({
     bootstrap: AppComponent
+  })
+]
+
+bootstrap: [EasyI18nBootstrapComponent]
+```
+
+For custom loading component
+
+```typescript
+imports: [
+  EasyI18nBootstrapModule.forRoot({
+    bootstrap: AppComponent,
+    loadingComponent: MyLoadingComponent
   })
 ]
 

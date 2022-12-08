@@ -120,7 +120,7 @@ export class EasyI18nService implements OnDestroy {
           tap(msg => {
             setEasyI18nMessages(msg ?? {}, culture);
 
-            this._currentLocale = culture;
+            this._currentLocale = lodash.head(locales) ?? culture;
           })
         );
       }),
@@ -129,9 +129,7 @@ export class EasyI18nService implements OnDestroy {
 
     const browserCulture = this.getBrowserCulture();
     if (browserCulture) {
-      const res = getPossibleLocales(browserCulture, discover);
-
-      this.registerCulture(res?.[0] ?? browserCulture);
+      this.registerCulture(browserCulture);
     } else if (defaultLanguage) {
       this.registerCulture(defaultLanguage);
     }

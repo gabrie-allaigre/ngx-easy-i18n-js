@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { BOOTSTRAP, EasyI18nBootstrapComponent, LOADING_COMPONENT } from './lib/easy-i18n-bootstrap.component';
 import { PortalModule } from '@angular/cdk/portal';
 import { ComponentType } from '@angular/cdk/overlay';
-import { EasyI18nModule } from 'core';
+import { EasyI18nModule } from '@ngx-easy-i18n-js/core';
 
 export * from './lib/easy-i18n-bootstrap.component';
 
