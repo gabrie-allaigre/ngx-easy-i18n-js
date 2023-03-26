@@ -9,7 +9,7 @@ export const BOOTSTRAP = new InjectionToken<ComponentType<any>>('BOOTSTRAP');
 export const LOADING_COMPONENT = new InjectionToken<ComponentType<any>>('LOADING_COMPONENT');
 
 @Component({
-  selector: 'app-easy-i18n',
+  selector: 'ngx-easy-i18n',
   templateUrl: './easy-i18n-bootstrap.component.html'
 })
 export class EasyI18nBootstrapComponent implements OnInit, OnDestroy {

@@ -1,0 +1,11 @@
+{
+  "Test": "Coucou",
+  "Next page": "Prochaine page",
+  "hello": "Salut",
+  "hello_with_genre": {
+    "male": "Bonjour gars",
+    "female": "Salut fille"
+  },
+  "My name is {}": "Mon nom est {}",
+  "hello_name": "Coucou {name}"
+}

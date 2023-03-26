@@ -317,6 +317,8 @@ imports: [
 bootstrap: [EasyI18nBootstrapComponent]
 ```
 
+And in `index.html`, replace `<app-root></app-root>` by `<ngx-easy-i18n></ngx-easy-i18n>`
+
 For custom loading component
 
 ```typescript

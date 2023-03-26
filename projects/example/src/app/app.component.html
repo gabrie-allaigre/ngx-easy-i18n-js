@@ -1,0 +1,12 @@
+<div style="display: flex; flex-direction: column;">
+    <span tr>Test</span>
+
+    <div>{{ 'hello' | tr }}</div>
+    <div>{{ 'hello_with_genre' | tr: { gender: 'male' } }}</div>
+    <div>{{ 'My name is {}' | tr: { args: ['Gabriel'] } }}</div>
+    <div trContent="hello_name">
+        <span *trElement="'name'" style="color: red; font-size: 2rem; font-weight: bold">Gabriel</span>
+    </div>
+    <a [routerLink]="['./next']" tr>Next page</a>
+</div>
+<router-outlet></router-outlet>

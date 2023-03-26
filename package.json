@@ -14,7 +14,8 @@
     "prepublish-bootstrap": "npm run build-bootstrap",
     "publish-bootstrap": "cd dist/bootstrap && npm publish",
     "build": "npm run clean && npm run build-core && npm run build-http-loader && npm run build-bootstrap",
-    "publish-all": "npm run clean && npm run publish-core && npm run publish-http-loader && npm run publish-bootstrap"
+    "publish-all": "npm run clean && npm run publish-core && npm run publish-http-loader && npm run publish-bootstrap",
+    "start": "ng serve example"
   },
   "dependencies": {
     "@angular/animations": "^15.2.4",

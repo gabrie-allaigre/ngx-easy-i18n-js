@@ -25,10 +25,10 @@
   },
   "homepage": "https://github.com/gabrie-allaigre/ngx-easy-i18n-js#readme",
   "peerDependencies": {
-    "@angular/cdk": "^15.0.1",
-    "@angular/common": "^15.0.2",
+    "@angular/cdk": "^15.2.4",
+    "@angular/common": "^15.2.4",
     "@ngx-easy-i18n-js/core": ">=1.0.0",
-    "rxjs": "^7.5.0"
+    "rxjs": "^7.8.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"
