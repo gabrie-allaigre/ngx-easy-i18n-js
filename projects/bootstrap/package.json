@@ -1,6 +1,6 @@
 {
   "name": "@ngx-easy-i18n-js/bootstrap",
-  "version": "15.1.0",
+  "version": "16.0.0",
   "description": "Bootstrap for ngx-easy-i18n-js",
   "repository": {
     "type": "git",
@@ -25,8 +25,8 @@
   },
   "homepage": "https://github.com/gabrie-allaigre/ngx-easy-i18n-js#readme",
   "peerDependencies": {
-    "@angular/cdk": "^15.2.4",
-    "@angular/common": "^15.2.4",
+    "@angular/cdk": "^16.0.4",
+    "@angular/common": "^16.0.4",
     "@ngx-easy-i18n-js/core": ">=1.0.0",
     "rxjs": "^7.8.0"
   },
