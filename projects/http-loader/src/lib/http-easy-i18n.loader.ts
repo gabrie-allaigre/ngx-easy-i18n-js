@@ -5,7 +5,7 @@ import { EasyI18nLoader } from '@ngx-easy-i18n-js/core';
 import * as lodash from 'lodash';
 import { map } from 'rxjs/operators';
 
-export interface IOptions {
+export interface IHttpEasyI18nLoaderOptions {
   /**
    * Url prefix, default '/assets/i18n/' or Array of prefix
    */
@@ -18,11 +18,11 @@ export interface IOptions {
 
 export class HttpEasyI18nLoader extends EasyI18nLoader {
 
-  private options: IOptions;
+  private options: IHttpEasyI18nLoaderOptions;
 
   constructor(
     private httpClient: HttpClient,
-    options?: IOptions
+    options?: IHttpEasyI18nLoaderOptions
   ) {
     super();
 

@@ -1,13 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { catchError, forkJoin, Observable, of } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 import { EasyI18nMessages } from 'easy-i18n-js';
 import { EasyI18nLoader } from '@ngx-easy-i18n-js/core';
 import * as lodash from 'lodash';
 import { map } from 'rxjs/operators';
 import { HttpEasyI18nLoader } from './http-easy-i18n.loader';
-import { prefix } from 'concurrently/dist/src/defaults';
 
-export interface IScope {
+export interface IScopedHttpEasyI18nLoaderScope {
   /**
    * Url prefix, Array of prefix
    */
@@ -18,7 +17,7 @@ export interface IScope {
   scope: string;
 }
 
-export interface IOptions {
+export interface IScopedHttpEasyI18nLoaderOptions {
   /**
    * Url suffix, default '.json'
    */
@@ -31,8 +30,8 @@ export class ScopedHttpEasyI18nLoader extends EasyI18nLoader {
 
   constructor(
     readonly httpClient: HttpClient,
-    readonly scopes: IScope[],
-    readonly options?: IOptions
+    readonly scopes: IScopedHttpEasyI18nLoaderScope[],
+    readonly options?: IScopedHttpEasyI18nLoaderOptions
   ) {
     super();
 
