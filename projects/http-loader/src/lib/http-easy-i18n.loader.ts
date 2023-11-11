@@ -3,7 +3,7 @@ import { catchError, forkJoin, Observable, of } from 'rxjs';
 import { EasyI18nMessages } from 'easy-i18n-js';
 import { EasyI18nLoader } from '@ngx-easy-i18n-js/core';
 import * as lodash from 'lodash';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 export interface IOptions {
   /**
