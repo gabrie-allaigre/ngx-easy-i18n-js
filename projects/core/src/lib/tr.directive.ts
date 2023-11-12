@@ -3,7 +3,8 @@ import * as lodash from 'lodash';
 import { tr, TrOptions } from 'easy-i18n-js';
 
 @Directive({
-  selector: '[tr]'
+  selector: '[tr]',
+  standalone: true
 })
 export class TrDirective implements OnDestroy {
 

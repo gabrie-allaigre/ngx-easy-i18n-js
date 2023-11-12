@@ -16,6 +16,7 @@ import * as lodash from 'lodash';
 
 @Directive({
   selector: '[pluralElement]',
+  standalone: true
 })
 export class PluralElementDirective {
 
@@ -30,7 +31,8 @@ export class PluralElementDirective {
 }
 
 @Directive({
-  selector: '[pluralContent]'
+  selector: '[pluralContent]',
+  standalone: true
 })
 export class PluralContentDirective implements AfterContentInit, OnDestroy {
 

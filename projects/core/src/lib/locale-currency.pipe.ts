@@ -3,7 +3,8 @@ import { EasyI18nService } from './easy-i18n.service';
 import { formatCurrency } from '@angular/common';
 
 @Pipe({
-  name: 'localeCurrency'
+  name: 'localeCurrency',
+  standalone: true
 })
 export class LocaleCurrencyPipe implements PipeTransform {
 

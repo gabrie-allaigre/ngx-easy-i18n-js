@@ -2,7 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { plural, PluralOptions } from 'easy-i18n-js';
 
 @Pipe({
-  name: 'plural'
+  name: 'plural',
+  standalone: true
 })
 export class PluralPipe implements PipeTransform {
 

@@ -3,7 +3,8 @@ import * as lodash from 'lodash';
 import { plural, PluralOptions } from 'easy-i18n-js';
 
 @Directive({
-  selector: '[plural]'
+  selector: '[plural]',
+  standalone: true
 })
 export class PluralDirective implements OnDestroy {
 

@@ -3,7 +3,8 @@ import { EasyI18nService } from './easy-i18n.service';
 import { formatDate } from '@angular/common';
 
 @Pipe({
-  name: 'localeDate'
+  name: 'localeDate',
+  standalone: true
 })
 export class LocaleDatePipe implements PipeTransform {
 

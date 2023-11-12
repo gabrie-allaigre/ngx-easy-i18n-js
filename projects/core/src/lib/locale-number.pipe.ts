@@ -3,7 +3,8 @@ import { EasyI18nService } from './easy-i18n.service';
 import { formatNumber } from '@angular/common';
 
 @Pipe({
-  name: 'localeNumber'
+  name: 'localeNumber',
+  standalone: true
 })
 export class LocaleNumberPipe implements PipeTransform {
 

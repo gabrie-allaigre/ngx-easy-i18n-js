@@ -2,7 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { tr, TrOptions } from 'easy-i18n-js';
 
 @Pipe({
-  name: 'tr'
+  name: 'tr',
+  standalone: true
 })
 export class TrPipe implements PipeTransform {
 

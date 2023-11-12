@@ -5,7 +5,7 @@ import { TrDirective } from './lib/tr.directive';
 import { TrPipe } from './lib/tr.pipe';
 import { PluralPipe } from './lib/plural.pipe';
 import { PluralDirective } from './lib/plural.directive';
-import { LocalePecentPipe } from './lib/locale-percent.pipe';
+import { LocalePercentPipe } from './lib/locale-percent.pipe';
 import { LocaleCurrencyPipe } from './lib/locale-currency.pipe';
 import { EasyI18nOptions } from 'easy-i18n-js';
 import {
@@ -66,14 +66,14 @@ export interface EasyI18nModuleConfig {
 }
 
 @NgModule({
-  declarations: [
+  imports: [
     LocaleDatePipe,
     LocaleNumberPipe,
     TrDirective,
     TrPipe,
     PluralPipe,
     PluralDirective,
-    LocalePecentPipe,
+    LocalePercentPipe,
     LocaleCurrencyPipe,
     PluralElementDirective,
     PluralContentDirective,
@@ -87,7 +87,7 @@ export interface EasyI18nModuleConfig {
     TrPipe,
     PluralPipe,
     PluralDirective,
-    LocalePecentPipe,
+    LocalePercentPipe,
     LocaleCurrencyPipe,
     PluralElementDirective,
     PluralContentDirective,

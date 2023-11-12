@@ -3,9 +3,10 @@ import { EasyI18nService } from './easy-i18n.service';
 import { formatPercent } from '@angular/common';
 
 @Pipe({
-  name: 'localePercent'
+  name: 'localePercent',
+  standalone: true
 })
-export class LocalePecentPipe implements PipeTransform {
+export class LocalePercentPipe implements PipeTransform {
 
   constructor(
     private easyI18nService: EasyI18nService,

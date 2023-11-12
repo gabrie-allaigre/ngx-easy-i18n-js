@@ -16,6 +16,7 @@ import * as lodash from 'lodash';
 
 @Directive({
   selector: '[trElement]',
+  standalone: true
 })
 export class TrElementDirective {
 
@@ -30,7 +31,8 @@ export class TrElementDirective {
 }
 
 @Directive({
-  selector: '[trContent]'
+  selector: '[trContent]',
+  standalone: true
 })
 export class TrContentDirective implements AfterContentInit, OnDestroy {
 
