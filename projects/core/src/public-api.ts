@@ -10,16 +10,17 @@ import { LocaleCurrencyPipe } from './lib/locale-currency.pipe';
 import { EasyI18nOptions } from 'easy-i18n-js';
 import {
   DEFAULT_LANGUAGE,
+  DISCOVER,
   EASY_I18N_OPTIONS,
   EasyI18nService,
   FALLBACK_LANGUAGE,
   NG_LOCALES,
-  DISCOVER,
   USE_BROWSER_LANGUAGE
 } from './lib/easy-i18n.service';
 import { EasyI18nLoader, EmptyEasyI18nLoader } from './lib/easy-i18n.loader';
 import { PluralContentDirective, PluralElementDirective } from './lib/plural-content.directive';
 import { TrContentDirective, TrElementDirective } from './lib/tr-content.directive';
+import { EasyI18nStore, EmptyEasyI18nStore } from './lib/easy-i18n.store';
 
 export * from './lib/locale-date.pipe';
 export * from './lib/locale-number.pipe';
@@ -32,6 +33,7 @@ export * from './lib/tr-content.directive';
 export * from './lib/plural.directive';
 export * from './lib/plural-content.directive';
 export * from './lib/easy-i18n.loader';
+export * from './lib/easy-i18n.store';
 export * from './lib/easy-i18n.service';
 
 export interface EasyI18nModuleConfig {
@@ -43,6 +45,10 @@ export interface EasyI18nModuleConfig {
    * Use specific loader
    */
   loader?: Provider;
+  /**
+   * Use specific store
+   */
+  store?: Provider;
   /**
    * Use specific loader
    */
@@ -105,6 +111,7 @@ export class EasyI18nModule {
       ngModule: EasyI18nModule,
       providers: [
         config.loader || { provide: EasyI18nLoader, useClass: EmptyEasyI18nLoader },
+        config.store || { provide: EasyI18nStore, useClass: EmptyEasyI18nStore },
         { provide: EASY_I18N_OPTIONS, useValue: config.options },
         { provide: NG_LOCALES, useValue: config.ngLocales },
         { provide: USE_BROWSER_LANGUAGE, useValue: config.useBrowserLanguage ?? true },

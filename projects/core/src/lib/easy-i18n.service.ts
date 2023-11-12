@@ -5,6 +5,7 @@ import { EasyI18nOptions, installEasyI18n, setEasyI18nMessages } from 'easy-i18n
 import * as lodash from 'lodash';
 import { EasyI18nLoader } from './easy-i18n.loader';
 import { catchError, map, tap } from 'rxjs/operators';
+import { EasyI18nStore } from './easy-i18n.store';
 
 export const EASY_I18N_OPTIONS = new InjectionToken<EasyI18nOptions>('EASY_I18N_OPTIONS');
 export const NG_LOCALES = new InjectionToken<{ [key: string]: any; }>('NG_LOCALES');
@@ -74,6 +75,7 @@ export class EasyI18nService implements OnDestroy {
     @Inject(FALLBACK_LANGUAGE) fallbackLanguage: string,
     @Inject(DISCOVER) discover: 'exact' | 'minimum' | 'all',
     private loader: EasyI18nLoader,
+    private store: EasyI18nStore
   ) {
     installEasyI18n(options);
 
@@ -127,12 +129,16 @@ export class EasyI18nService implements OnDestroy {
       tap(() => this._localeStatusSubject.next('ready')),
     ).subscribe();
 
-    const browserCulture = this.getBrowserCulture();
-    if (browserCulture) {
-      this.registerCulture(browserCulture);
-    } else if (defaultLanguage) {
-      this.registerCulture(defaultLanguage);
-    }
+    this.store.get().pipe(
+      tap(stored => {
+        const culture = stored ?? this.getBrowserCulture() ?? defaultLanguage;
+        if (!culture || !cultureRegex.test(culture)) {
+          console.error(`Culture ${culture} is wrong format`);
+          return;
+        }
+        this._localeSubject.next(culture);
+      })
+    ).subscribe();
   }
 
   ngOnDestroy(): void {
@@ -149,6 +155,8 @@ export class EasyI18nService implements OnDestroy {
       console.error(`Culture ${culture} is wrong format`);
       return;
     }
+
+    this.store.save(culture);
 
     this._localeSubject.next(culture);
   }
