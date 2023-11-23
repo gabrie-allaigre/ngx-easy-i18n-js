@@ -14,7 +14,7 @@ export class LocalePercentPipe implements PipeTransform {
   ) {
   }
 
-  transform(value: number, format: string, digitsInfo?: string): string {
+  transform(value: number, digitsInfo?: string): string {
     return formatPercent(value, this.easyI18nService.ngLocale ?? this.localeId, digitsInfo);
   }
 }
