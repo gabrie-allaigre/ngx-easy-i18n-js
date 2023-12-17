@@ -1,6 +1,6 @@
-import { Inject, Injectable, InjectionToken } from '@angular/core';
+import { DestroyRef, Inject, Injectable, InjectionToken } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
-import { BehaviorSubject, filter, firstValueFrom, forkJoin, Observable, of, Subject, switchMap } from 'rxjs';
+import { BehaviorSubject, filter, firstValueFrom, forkJoin, Observable, of, ReplaySubject, switchMap } from 'rxjs';
 import { EasyI18nOptions, installEasyI18n, setEasyI18nMessages } from 'easy-i18n-js';
 import * as lodash from 'lodash';
 import { EasyI18nLoader } from './easy-i18n.loader';
@@ -41,7 +41,7 @@ function getPossibleLocales(culture: string | undefined, discover: 'exact' | 'mi
 export class EasyI18nService {
 
   private _localeStatusSubject = new BehaviorSubject<LocaleStatus>('none');
-  private _localeSubject = new Subject<string>();
+  private _localeSubject = new ReplaySubject<string>(1);
 
   // Get status observable of loading locale
   public get localeStatus$(): Observable<LocaleStatus> {
@@ -72,38 +72,41 @@ export class EasyI18nService {
   private currentMsg: EasyI18nMessages = {};
 
   constructor(
-    @Inject(EASY_I18N_OPTIONS) options: EasyI18nOptions,
-    @Inject(NG_LOCALES) ngLocales: { [key: string]: any; },
-    @Inject(USE_BROWSER_LANGUAGE) useBrowserLanguage: boolean,
+    @Inject(EASY_I18N_OPTIONS) private options: EasyI18nOptions,
+    @Inject(NG_LOCALES) private ngLocales: { [key: string]: any; },
+    @Inject(USE_BROWSER_LANGUAGE) private useBrowserLanguage: boolean,
     @Inject(DEFAULT_LANGUAGE) private defaultLanguage: string,
     @Inject(FALLBACK_LANGUAGE) private fallbackLanguage: string,
     @Inject(DISCOVER) private discover: 'exact' | 'minimum' | 'all',
     private loader: EasyI18nLoader,
-    private store: EasyI18nStore
+    private store: EasyI18nStore,
+    private destroyRef: DestroyRef
   ) {
     installEasyI18n(options);
+  }
 
+  public async initialize() {
     this._localeSubject.asObservable().pipe(
-      takeUntilDestroyed(),
+      takeUntilDestroyed(this.destroyRef),
       tap(() => this._localeStatusSubject.next('loading')),
       switchMap(culture => {
-        const ngLocale = getPossibleLocales(culture, 'all').find(l => ngLocales?.[l]);
+        const ngLocale = getPossibleLocales(culture, 'all').find(l => this.ngLocales?.[l]);
         if (ngLocale != null) {
-          registerLocaleData(ngLocales[ngLocale]);
+          registerLocaleData(this.ngLocales[ngLocale]);
 
           this._ngLocale = ngLocale;
         } else {
           console.warn(`Not found locale data for currentLocale ${culture}`);
 
-          if (culture !== (fallbackLanguage ?? defaultLanguage)) {
-            const defaultNgLocale = getPossibleLocales(fallbackLanguage ?? defaultLanguage, 'all').find(l => ngLocales?.[l]);
+          if (culture !== (this.fallbackLanguage ?? this.defaultLanguage)) {
+            const defaultNgLocale = getPossibleLocales(this.fallbackLanguage ?? this.defaultLanguage, 'all').find(l => this.ngLocales?.[l]);
             if (defaultNgLocale != null) {
-              console.warn(`Use locale data with ${fallbackLanguage ?? defaultLanguage}`);
-              registerLocaleData(ngLocales[defaultNgLocale]);
+              console.warn(`Use locale data with ${this.fallbackLanguage ?? this.defaultLanguage}`);
+              registerLocaleData(this.ngLocales[defaultNgLocale]);
 
               this._ngLocale = defaultNgLocale;
             } else {
-              console.warn(`Not found locale data for defaultLanguage ${fallbackLanguage ?? defaultLanguage}`);
+              console.warn(`Not found locale data for defaultLanguage ${this.fallbackLanguage ?? this.defaultLanguage}`);
 
               this._ngLocale = null;
             }
@@ -111,7 +114,7 @@ export class EasyI18nService {
         }
 
         const locales = lodash.uniq(
-          [...getPossibleLocales(culture, discover), ...getPossibleLocales(fallbackLanguage ?? defaultLanguage, discover)]
+          [...getPossibleLocales(culture, this.discover), ...getPossibleLocales(this.fallbackLanguage ?? this.defaultLanguage, this.discover)]
         );
 
         return forkJoin(
@@ -146,8 +149,9 @@ export class EasyI18nService {
     ).subscribe();
 
     this.store.get().pipe(
+      takeUntilDestroyed(this.destroyRef),
       tap(stored => {
-        const culture = stored ?? this.getBrowserCulture() ?? defaultLanguage;
+        const culture = stored ?? this.getBrowserCulture() ?? this.defaultLanguage;
         if (!culture || !cultureRegex.test(culture)) {
           console.error(`Culture ${culture} is wrong format`);
           return;
@@ -155,22 +159,35 @@ export class EasyI18nService {
         this._localeSubject.next(culture);
       })
     ).subscribe();
+
+    return firstValueFrom(this._localeStatusSubject.asObservable().pipe(
+      filter(s => s === 'ready')
+    ));
   }
 
   /**
    * Change current culture
    *
    * @param culture new culture
+   * @param options
    */
-  public registerCulture(culture: string): void {
+  public registerCulture(culture: string, options?: {
+    reload?: boolean;
+  }): void {
     if (!culture || !cultureRegex.test(culture)) {
       console.error(`Culture ${culture} is wrong format`);
       return;
     }
 
-    this.store.save(culture);
-
-    this._localeSubject.next(culture);
+    this.store.save(culture).pipe(
+      tap(() => {
+        if (options?.reload) {
+          location.reload();
+        } else {
+          this._localeSubject.next(culture);
+        }
+      })
+    ).subscribe();
   }
 
   /**

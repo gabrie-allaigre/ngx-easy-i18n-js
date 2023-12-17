@@ -1,4 +1,4 @@
-import { ModuleWithProviders, NgModule, Provider } from '@angular/core';
+import { APP_INITIALIZER, ModuleWithProviders, NgModule, Provider } from '@angular/core';
 import { LocaleDatePipe } from './lib/locale-date.pipe';
 import { LocaleNumberPipe } from './lib/locale-number.pipe';
 import { TrDirective } from './lib/tr.directive';
@@ -21,6 +21,7 @@ import { EasyI18nLoader, EmptyEasyI18nLoader } from './lib/easy-i18n.loader';
 import { PluralContentDirective, PluralElementDirective } from './lib/plural-content.directive';
 import { TrContentDirective, TrElementDirective } from './lib/tr-content.directive';
 import { EasyI18nStore, EmptyEasyI18nStore } from './lib/easy-i18n.store';
+import { firstValueFrom } from 'rxjs';
 
 export * from './lib/locale-date.pipe';
 export * from './lib/locale-number.pipe';
@@ -118,7 +119,16 @@ export class EasyI18nModule {
         { provide: DEFAULT_LANGUAGE, useValue: config.defaultLanguage ?? 'en-US' },
         { provide: FALLBACK_LANGUAGE, useValue: config.fallbackLanguage },
         { provide: DISCOVER, useValue: config.discover ?? 'all' },
-        EasyI18nService
+        EasyI18nService,
+        {
+          provide: APP_INITIALIZER,
+          useFactory: (easyI18nService: EasyI18nService) => {
+            return async () =>
+              easyI18nService.initialize()
+          },
+          deps: [EasyI18nService],
+          multi: true
+        }
       ]
     };
   }

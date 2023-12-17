@@ -1,4 +1,4 @@
-import { Observable, of } from 'rxjs';
+import { defer, Observable, of } from 'rxjs';
 import { Injectable } from '@angular/core';
 
 export abstract class EasyI18nStore {
@@ -7,7 +7,7 @@ export abstract class EasyI18nStore {
    */
   public abstract get(): Observable<string | null>;
 
-  public abstract save(locale: string): Observable<void>;
+  public abstract save(locale: string): Observable<boolean>;
 }
 
 /**
@@ -20,8 +20,8 @@ export class EmptyEasyI18nStore extends EasyI18nStore {
     return of(null);
   }
 
-  public override save(locale: string): Observable<void> {
-    return of();
+  public override save(locale: string): Observable<boolean> {
+    return of(true);
   }
 }
 
@@ -37,11 +37,13 @@ export class LocaleStorageEasyI18nStore extends EasyI18nStore {
   }
 
   public override get(): Observable<string | null> {
-    return of(localStorage.getItem(this.key));
+    return defer(() => of(localStorage.getItem(this.key)));
   }
 
-  public override save(locale: string): Observable<void> {
-    localStorage.setItem(this.key, locale);
-    return of();
+  public override save(locale: string): Observable<boolean> {
+    return defer(() => {
+      localStorage.setItem(this.key, locale);
+      return of(true);
+    });
   }
 }
