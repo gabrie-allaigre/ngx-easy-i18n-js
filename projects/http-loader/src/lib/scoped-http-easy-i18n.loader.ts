@@ -1,10 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { forkJoin, Observable } from 'rxjs';
+import { forkJoin, from, Observable } from 'rxjs';
 import { EasyI18nMessages } from 'easy-i18n-js';
-import { EasyI18nLoader } from '@ngx-easy-i18n-js/core';
+import { EasyI18nLoader, EasyI18nService } from '@ngx-easy-i18n-js/core';
 import * as lodash from 'lodash';
 import { map } from 'rxjs/operators';
 import { HttpEasyI18nLoader } from './http-easy-i18n.loader';
+import { CanActivateFn } from '@angular/router';
+import { inject } from '@angular/core';
 
 export interface IScopedHttpEasyI18nLoaderScope {
   /**
@@ -56,6 +58,26 @@ export class ScopedHttpEasyI18nLoader extends EasyI18nLoader {
       ))
     ).pipe(
       map(datas => lodash.defaultsDeep({}, ...lodash.compact(datas)))
+    );
+  }
+}
+
+export function appendScopedHttpEasyI18nLoader(
+  scopes: IScopedHttpEasyI18nLoaderScope[],
+  options?: IScopedHttpEasyI18nLoaderOptions
+): CanActivateFn {
+  let alreadyAppened = false;
+  return () => {
+    if (alreadyAppened) {
+      return true;
+    }
+
+    alreadyAppened = true;
+
+    const httpClient = inject(HttpClient);
+    const easyI18nService = inject(EasyI18nService);
+    return from(easyI18nService.appendLoader(new ScopedHttpEasyI18nLoader(httpClient, scopes, options))).pipe(
+      map(() => true)
     );
   }
 }

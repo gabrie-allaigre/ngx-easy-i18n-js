@@ -1,11 +1,13 @@
-import { Inject, Injectable, InjectionToken, OnDestroy } from '@angular/core';
+import { Inject, Injectable, InjectionToken } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
-import { BehaviorSubject, forkJoin, Observable, of, Subject, Subscription, switchMap } from 'rxjs';
+import { BehaviorSubject, filter, firstValueFrom, forkJoin, Observable, of, Subject, switchMap } from 'rxjs';
 import { EasyI18nOptions, installEasyI18n, setEasyI18nMessages } from 'easy-i18n-js';
 import * as lodash from 'lodash';
 import { EasyI18nLoader } from './easy-i18n.loader';
 import { catchError, map, tap } from 'rxjs/operators';
 import { EasyI18nStore } from './easy-i18n.store';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { EasyI18nMessages } from 'easy-i18n-js/lib/easy-i18n';
 
 export const EASY_I18N_OPTIONS = new InjectionToken<EasyI18nOptions>('EASY_I18N_OPTIONS');
 export const NG_LOCALES = new InjectionToken<{ [key: string]: any; }>('NG_LOCALES');
@@ -36,7 +38,7 @@ function getPossibleLocales(culture: string | undefined, discover: 'exact' | 'mi
 }
 
 @Injectable()
-export class EasyI18nService implements OnDestroy {
+export class EasyI18nService {
 
   private _localeStatusSubject = new BehaviorSubject<LocaleStatus>('none');
   private _localeSubject = new Subject<string>();
@@ -65,21 +67,24 @@ export class EasyI18nService implements OnDestroy {
     return this._ngLocale;
   }
 
-  private subscription: Subscription;
+  private readonly otherLoaders: EasyI18nLoader[] = [];
+
+  private currentMsg: EasyI18nMessages = {};
 
   constructor(
     @Inject(EASY_I18N_OPTIONS) options: EasyI18nOptions,
     @Inject(NG_LOCALES) ngLocales: { [key: string]: any; },
     @Inject(USE_BROWSER_LANGUAGE) useBrowserLanguage: boolean,
-    @Inject(DEFAULT_LANGUAGE) defaultLanguage: string,
-    @Inject(FALLBACK_LANGUAGE) fallbackLanguage: string,
-    @Inject(DISCOVER) discover: 'exact' | 'minimum' | 'all',
+    @Inject(DEFAULT_LANGUAGE) private defaultLanguage: string,
+    @Inject(FALLBACK_LANGUAGE) private fallbackLanguage: string,
+    @Inject(DISCOVER) private discover: 'exact' | 'minimum' | 'all',
     private loader: EasyI18nLoader,
     private store: EasyI18nStore
   ) {
     installEasyI18n(options);
 
-    this.subscription = this._localeSubject.asObservable().pipe(
+    this._localeSubject.asObservable().pipe(
+      takeUntilDestroyed(),
       tap(() => this._localeStatusSubject.next('loading')),
       switchMap(culture => {
         const ngLocale = getPossibleLocales(culture, 'all').find(l => ngLocales?.[l]);
@@ -110,17 +115,28 @@ export class EasyI18nService implements OnDestroy {
         );
 
         return forkJoin(
-          locales.map(locale =>
-            this.loader.getMessages(locale).pipe(
-              catchError(() => {
-                return of({});
-              })
-            )
+          locales.flatMap(locale =>
+            [
+              this.loader.getMessages(locale).pipe(
+                catchError(() => {
+                  return of({});
+                })
+              ),
+              ...this.otherLoaders.map(l =>
+                l.getMessages(locale).pipe(
+                  catchError(() => {
+                    return of({});
+                  })
+                )
+              )
+            ]
           )
         ).pipe(
           map(res => lodash.defaultsDeep({}, ...lodash.compact(res))),
           tap(msg => {
-            setEasyI18nMessages(msg ?? {}, culture);
+            this.currentMsg = msg ?? {};
+
+            setEasyI18nMessages(this.currentMsg, culture);
 
             this._currentLocale = lodash.head(locales) ?? culture;
           })
@@ -139,10 +155,6 @@ export class EasyI18nService implements OnDestroy {
         this._localeSubject.next(culture);
       })
     ).subscribe();
-  }
-
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
   }
 
   /**
@@ -172,5 +184,36 @@ export class EasyI18nService implements OnDestroy {
     let browserCultureLang: any = window.navigator.languages ? window.navigator.languages[0] : null;
     return browserCultureLang ?? window.navigator.language ??
       (window.navigator as any).browserLanguage ?? (window.navigator as any).userLanguage;
+  }
+
+  public async appendLoader(loader: EasyI18nLoader) {
+    this.otherLoaders.push(loader);
+
+    return firstValueFrom(this._localeStatusSubject.asObservable().pipe(
+      filter(s => s === 'ready'),
+      switchMap(() => {
+        const locales = lodash.uniq(
+          [...getPossibleLocales(this._currentLocale!, this.discover), ...getPossibleLocales(this.fallbackLanguage ?? this.defaultLanguage, this.discover)]
+        );
+
+        return forkJoin(
+          locales.map(locale =>
+            loader.getMessages(locale).pipe(
+              catchError(() => {
+                return of({});
+              })
+            )
+          )
+        ).pipe(
+          map(res => lodash.defaultsDeep(this.currentMsg, ...lodash.compact(res))),
+          tap(msg => {
+            setEasyI18nMessages(msg, this._currentLocale!);
+          }),
+          map(() => true)
+        )
+      })
+    ), {
+      defaultValue: false
+    });
   }
 }
