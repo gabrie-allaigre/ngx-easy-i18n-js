@@ -85,16 +85,22 @@ export class MyComponent {
 }
 ```
 
+Force reload if change culture
+
+```typescript
+ this.easyI18nService.registerCulture('fr', { reload: true });
+```
+
 ### Locale pipes
 
 In HTML, uses locales pipes to get dates, numbers in locale format
 
-| pipe             | description                                    | example                                                                                           |
-|------------------|------------------------------------------------|---------------------------------------------------------------------------------------------------|
-| `localeDate`     | Same as `date`                                 | <code>{{ mydate &#124; localeDate:'short' }}</code>                                               |
-| `localeNumber`   | Same as `number`                               | <code>{{ mydate &#124; localeNumber }}</code>                                                     |
-| `localeCurrency` | Same as `currency`                             | <code>{{ mydate &#124; localeCurrency }}</code>                                                   |
-| `localePercent`  | Same as `percent`                              | <code>{{ mydate &#124; localePercent }}</code>                                                    |
+| pipe             | description        | example                                             |
+|------------------|--------------------|-----------------------------------------------------|
+| `localeDate`     | Same as `date`     | <code>{{ mydate &#124; localeDate:'short' }}</code> |
+| `localeNumber`   | Same as `number`   | <code>{{ mydate &#124; localeNumber }}</code>       |
+| `localeCurrency` | Same as `currency` | <code>{{ mydate &#124; localeCurrency }}</code>     |
+| `localePercent`  | Same as `percent`  | <code>{{ mydate &#124; localePercent }}</code>      |
 
 ### Translate
 
@@ -106,8 +112,8 @@ In HTML template, with pipe, parameter is TrOptions
 
 ```angular2html
 {{ 'hello' | tr }}
-{{ 'hello_with_genre' | tr: {gender: 'male'} }}
-{{ 'My name is {}' | tr: {args: ['Gabriel']} }}
+{{ 'hello_with_genre' | tr: { gender: 'male' } }}
+{{ 'My name is {}' | tr: { args: ['Gabriel'] } }}
 ```
 
 **TrOptions arguments**
@@ -129,21 +135,21 @@ First is simple, translate `[tr]`
 |---------------|--------------------------------|------------------------------------------------------------------------------------|
 | `tr`          | Active directive translate     | <code>&lt;span tr&gt;hello&lt;/span&gt;</code>                                     |
 | `trNamespace` | Add namespace                  | <code>&lt;span tr trNamespace="common"&gt;hello&lt;/span&gt;</code>                |
-| `trKey`       | Set key (if empty use content) | <code>&lt;span tr trKey="hello" trNamespace="common"&gt;&lt;/span&gt;</code>              |
+| `trKey`       | Set key (if empty use content) | <code>&lt;span tr trKey="hello" trNamespace="common"&gt;&lt;/span&gt;</code>       |
 | `trGender`    | Gender                         | <code>&lt;span tr trGender="male"&gt;hello_with_genre&lt;/span&gt;</code>          |
 | `trArgs`      | Arguments                      | <code>&lt;span tr [trArgs]="['Gabriel']"&gt;hello&lt;/span&gt;</code>              |
 | `trNamedArgs` | Named arguments                | <code>&lt;span tr [trNamedArgs]="{ name: 'Gabriel' }"&gt;hello&lt;/span&gt;</code> |
 
 Second, use HTML named arguments `[trContent]`, replace `{namedArg}` with child element `*trElement`
 
-| Directive     | description                                    | 
-|---------------|------------------------------------------------|
-| `trContent`   | Active content directive translate, get a key  |
-| `trNamespace` | Add namespace                                  |
-| `trGender`    | Gender                                         |
-| `trArgs`      | Arguments                                      |
-| `trNamedArgs` | Named arguments                                |
-| `demarc`      | Change token start, end identifier             |
+| Directive     | description                                   | 
+|---------------|-----------------------------------------------|
+| `trContent`   | Active content directive translate, get a key |
+| `trNamespace` | Add namespace                                 |
+| `trGender`    | Gender                                        |
+| `trArgs`      | Arguments                                     |
+| `trNamedArgs` | Named arguments                               |
+| `demarc`      | Change token start, end identifier            |
 
 **Examples**
 
@@ -155,6 +161,7 @@ Second, use HTML named arguments `[trContent]`, replace `{namedArg}` with child 
 ```
 
 ```angular2html
+
 <div trContent="My name is {name} and I live in {country}" style="color: blue;">
     <span *trElement="'name'" style="color: red; font-size: 2rem; font-weight: bold">Gabriel</span>
     <span *trElement="'country'">{{ var_country }}</span>
@@ -184,7 +191,7 @@ In HTML template, with pipe, first parameter is number and second PluralOptions
 
 ```angular2html
 {{ 'money' | plural:10 }}
-{{ 'money_with_args' | plural:3: {args: ['Gabriel']} }}
+{{ 'money_with_args' | plural:3: { args: ['Gabriel'] } }}
 ```
 
 **PluralOptions arguments**
@@ -204,16 +211,16 @@ There are 2 different directives
 
 First is simple, translate plural `[plural]`
 
-| Directive                 | description                    | example                                                                                               |
-|---------------------------|--------------------------------|-------------------------------------------------------------------------------------------------------|
-| `plural`                  | Active directive translate     | <code>&lt;span [plural]="10"&gt;money&lt;/span&gt;</code>                                             |
-| `pluralNamespace`         | Add namespace                  | <code>&lt;span [plural]="100" pluralNamespace="common"&gt;money&lt;/span&gt;</code>                   |
-| `pluralKey`               | Set key (if empty use content) | <code>&lt;span [plural]="100" pluralKey="money" pluralNamespace="common"&gt;&lt;/span&gt;</code> |
-| `pluralGender`            | Gender                         | <code>&lt;span [plural]="1" pluralGender="male"&gt;money_with_genre&lt;/span&gt;</code>               |
-| `pluralArgs`              | Arguments                      | <code>&lt;span [plural]="5" [pluralArgs]="['Gabriel']"&gt;money&lt;/span&gt;</code>                   |
-| `pluralNamedArgs`         | Named arguments                | <code>&lt;span [plural]="13" [pluralNamedArgs]="{ name: 'Gabriel' }"&gt;money&lt;/span&gt;</code>     |
-| `pluralName`              | Name value                     | <code>&lt;span [plural]="4" pluralName="value"&gt;money&lt;/span&gt;</code>                           |
-| `pluralNumberFormatterFn` | Formatter function             | <code>&lt;span [plural]="10000" [pluralNumberFormatterFn]="myFn"&gt;money&lt;/span&gt;</code>         |
+| Directive                 | description                    | example                                                                                           |
+|---------------------------|--------------------------------|---------------------------------------------------------------------------------------------------|
+| `plural`                  | Active directive translate     | <code>&lt;span [plural]="10"&gt;money&lt;/span&gt;</code>                                         |
+| `pluralNamespace`         | Add namespace                  | <code>&lt;span [plural]="100" pluralNamespace="common"&gt;money&lt;/span&gt;</code>               |
+| `pluralKey`               | Set key (if empty use content) | <code>&lt;span [plural]="100" pluralKey="money" pluralNamespace="common"&gt;&lt;/span&gt;</code>  |
+| `pluralGender`            | Gender                         | <code>&lt;span [plural]="1" pluralGender="male"&gt;money_with_genre&lt;/span&gt;</code>           |
+| `pluralArgs`              | Arguments                      | <code>&lt;span [plural]="5" [pluralArgs]="['Gabriel']"&gt;money&lt;/span&gt;</code>               |
+| `pluralNamedArgs`         | Named arguments                | <code>&lt;span [plural]="13" [pluralNamedArgs]="{ name: 'Gabriel' }"&gt;money&lt;/span&gt;</code> |
+| `pluralName`              | Name value                     | <code>&lt;span [plural]="4" pluralName="value"&gt;money&lt;/span&gt;</code>                       |
+| `pluralNumberFormatterFn` | Formatter function             | <code>&lt;span [plural]="10000" [pluralNumberFormatterFn]="myFn"&gt;money&lt;/span&gt;</code>     |
 
 Second, use HTML named arguments `[pluralContent]`, replace `{namedArg}` with child element `*pluralElement`
 
@@ -241,7 +248,8 @@ Second, use HTML named arguments `[pluralContent]`, replace `{namedArg}` with ch
 } -->
 <div pluralContent="money_content" [pluralValue]="var_money" class="fst-italic text-gray-500">
     <span *pluralElement="'name'" style="color: red; font-size: 2rem; font-weight: bold">Gabriel</span>
-    <span *pluralElement="'money'" style="color: blueviolet; font-weight: bold" [style.font-size]="(var_money / 10) + 'vw'">{{ var_money }}</span>
+    <span *pluralElement="'money'" style="color: blueviolet; font-weight: bold"
+          [style.font-size]="(var_money / 10) + 'vw'">{{ var_money }}</span>
 </div>
 ```
 
@@ -257,7 +265,24 @@ In typescript file, **there is no need to inject EasyI18nService**
 plural('money_args', { args: ['Gabriel'] });
 ```
 
+## Store
+
+Default store is `EmptyEasyI18nStore`
+
+Use `localStorage` store, usage in app.module.ts, add provider
+
+```typescript
+providers: [
+  {
+    provide: EasyI18nStore,
+    useFactory: () => new LocalStorageEasyI18nStore('current-lang')
+  }
+]
+```
+
 ## Add HttpLoader
+
+### Standard
 
 Load messages with `HttpClient`
 
@@ -295,9 +320,60 @@ new HttpEasyI18nLoader(httpClient, {
 });
 ```
 
-## Add Bootstrap (not deployed)
+### Scoped loader
 
-Bootstrap application, refresh application when locale change
+Load multiples files with scope
+
+Usage in app.module.ts, add provider
+
+```typescript
+providers: [
+  {
+    provide: EasyI18nLoader,
+    deps: [HttpClient],
+    useFactory: (httpClient: HttpClient) => new ScopedHttpEasyI18nLoader(httpClient, [
+      { prefix: `/assets/i18n/` },
+      { prefix: ['assets/common/i18n', 'assets/i18n/common'], scope: 'common' },
+      { prefix: `/assets/i18n/errors/`, scope: 'errors' }
+    ])
+  }
+]
+```
+
+```angular2html
+{{ 'common.save' | tr }}
+{{ 'errors.internal_server_error' | tr }}
+```
+
+Change suffix
+
+```typescript
+new ScopedHttpEasyI18nLoader(httpClient, [
+    { prefix: `/assets/i18n/` }
+  ], {
+  suffix: '.json5'
+});
+```
+
+Append scoped loader for lazy routes
+
+```typescript
+const routes: Routes = [
+  {
+    path: 'login',
+    loadChildren: () => import('./login/login.module').then(m => m.LoginModule),
+    canActivate: [
+      appendScopedHttpEasyI18nLoader([
+        { prefix: `/assets/i18n/login/`, scope: 'login' }
+      ])
+    ]
+  }
+];
+```
+
+## Add Bootstrap
+
+Bootstrap application, refresh application when culture change without reload page
 
 Install using npm:
 

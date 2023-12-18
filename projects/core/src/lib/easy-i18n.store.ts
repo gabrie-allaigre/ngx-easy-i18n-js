@@ -26,9 +26,9 @@ export class EmptyEasyI18nStore extends EasyI18nStore {
 }
 
 /**
- * Use localeStorage
+ * Use localStorage
  */
-export class LocaleStorageEasyI18nStore extends EasyI18nStore {
+export class LocalStorageEasyI18nStore extends EasyI18nStore {
 
   constructor(
     private readonly key: string

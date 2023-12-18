@@ -16,7 +16,7 @@ export interface IScopedHttpEasyI18nLoaderScope {
   /**
    * Alias
    */
-  scope: string;
+  scope?: string;
 }
 
 export interface IScopedHttpEasyI18nLoaderOptions {
@@ -42,7 +42,7 @@ export class ScopedHttpEasyI18nLoader extends EasyI18nLoader {
         prefix: s.prefix,
         suffix: options?.suffix ?? '.json'
       }),
-      scope: s.scope
+      scope: s.scope ?? ''
     }));
   }
 
