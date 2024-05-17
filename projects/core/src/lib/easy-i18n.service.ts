@@ -151,7 +151,7 @@ export class EasyI18nService {
     this.store.get().pipe(
       takeUntilDestroyed(this.destroyRef),
       tap(stored => {
-        const culture = stored ?? this.getBrowserCulture() ?? this.defaultLanguage;
+        const culture = stored ?? (this.useBrowserLanguage ? this.getBrowserCulture() : null) ?? this.defaultLanguage;
         if (!culture || !cultureRegex.test(culture)) {
           console.error(`Culture ${culture} is wrong format`);
           return;
