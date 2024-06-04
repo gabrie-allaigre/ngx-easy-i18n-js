@@ -11,12 +11,7 @@ export const LOADING_COMPONENT = new InjectionToken<ComponentType<any>>('LOADING
 
 @Component({
   selector: 'ngx-easy-i18n',
-  templateUrl: './easy-i18n-bootstrap.component.html',
-  standalone: true,
-  imports: [
-    CommonModule,
-    PortalModule,
-  ],
+  templateUrl: './easy-i18n-bootstrap.component.html'
 })
 export class EasyI18nBootstrapComponent implements OnInit, OnDestroy {
 
