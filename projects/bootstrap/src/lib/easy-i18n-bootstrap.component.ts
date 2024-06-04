@@ -1,16 +1,22 @@
 import { Component, ComponentRef, Inject, InjectionToken, Injector, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CdkPortalOutlet, ComponentPortal } from '@angular/cdk/portal';
+import { CdkPortalOutlet, ComponentPortal, PortalModule } from '@angular/cdk/portal';
 import { tap } from 'rxjs/operators';
 import { ComponentType } from '@angular/cdk/overlay';
 import { EasyI18nService, LocaleStatus } from '@ngx-easy-i18n-js/core';
+import { CommonModule } from '@angular/common';
 
 export const BOOTSTRAP = new InjectionToken<ComponentType<any>>('BOOTSTRAP');
 export const LOADING_COMPONENT = new InjectionToken<ComponentType<any>>('LOADING_COMPONENT');
 
 @Component({
   selector: 'ngx-easy-i18n',
-  templateUrl: './easy-i18n-bootstrap.component.html'
+  templateUrl: './easy-i18n-bootstrap.component.html',
+  standalone: true,
+  imports: [
+    CommonModule,
+    PortalModule,
+  ],
 })
 export class EasyI18nBootstrapComponent implements OnInit, OnDestroy {
 

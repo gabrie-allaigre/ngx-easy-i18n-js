@@ -21,7 +21,6 @@ import { EasyI18nLoader, EmptyEasyI18nLoader } from './lib/easy-i18n.loader';
 import { PluralContentDirective, PluralElementDirective } from './lib/plural-content.directive';
 import { TrContentDirective, TrElementDirective } from './lib/tr-content.directive';
 import { EasyI18nStore, EmptyEasyI18nStore } from './lib/easy-i18n.store';
-import { firstValueFrom } from 'rxjs';
 
 export * from './lib/locale-date.pipe';
 export * from './lib/locale-number.pipe';
@@ -110,26 +109,30 @@ export class EasyI18nModule {
   static forRoot(config: EasyI18nModuleConfig): ModuleWithProviders<EasyI18nModule> {
     return {
       ngModule: EasyI18nModule,
-      providers: [
-        config.loader || { provide: EasyI18nLoader, useClass: EmptyEasyI18nLoader },
-        config.store || { provide: EasyI18nStore, useClass: EmptyEasyI18nStore },
-        { provide: EASY_I18N_OPTIONS, useValue: config.options },
-        { provide: NG_LOCALES, useValue: config.ngLocales },
-        { provide: USE_BROWSER_LANGUAGE, useValue: config.useBrowserLanguage ?? true },
-        { provide: DEFAULT_LANGUAGE, useValue: config.defaultLanguage ?? 'en-US' },
-        { provide: FALLBACK_LANGUAGE, useValue: config.fallbackLanguage },
-        { provide: DISCOVER, useValue: config.discover ?? 'all' },
-        EasyI18nService,
-        {
-          provide: APP_INITIALIZER,
-          useFactory: (easyI18nService: EasyI18nService) => {
-            return async () =>
-              easyI18nService.initialize()
-          },
-          deps: [EasyI18nService],
-          multi: true
-        }
-      ]
+      providers: provideEasyI18n(config)
     };
   }
+}
+
+export function provideEasyI18n(config: EasyI18nModuleConfig): Provider[] {
+  return [
+    config.loader || { provide: EasyI18nLoader, useClass: EmptyEasyI18nLoader },
+    config.store || { provide: EasyI18nStore, useClass: EmptyEasyI18nStore },
+    { provide: EASY_I18N_OPTIONS, useValue: config.options },
+    { provide: NG_LOCALES, useValue: config.ngLocales },
+    { provide: USE_BROWSER_LANGUAGE, useValue: config.useBrowserLanguage ?? true },
+    { provide: DEFAULT_LANGUAGE, useValue: config.defaultLanguage ?? 'en-US' },
+    { provide: FALLBACK_LANGUAGE, useValue: config.fallbackLanguage },
+    { provide: DISCOVER, useValue: config.discover ?? 'all' },
+    EasyI18nService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (easyI18nService: EasyI18nService) => {
+        return async () =>
+          easyI18nService.initialize()
+      },
+      deps: [EasyI18nService],
+      multi: true
+    }
+  ];
 }
