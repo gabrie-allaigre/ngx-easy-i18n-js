@@ -14,7 +14,7 @@ export class LocaleDatePipe implements PipeTransform {
   ) {
   }
 
-  transform(value: string | number | Date, format: string): string {
-    return formatDate(value, format, this.easyI18nService.ngLocale ?? this.localeId);
+  transform(value: string | number | Date, format: string, timezone?: string): string {
+    return formatDate(value, format, this.easyI18nService.ngLocale ?? this.localeId, timezone);
   }
 }

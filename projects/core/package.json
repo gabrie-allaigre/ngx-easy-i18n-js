@@ -1,6 +1,6 @@
 {
   "name": "@ngx-easy-i18n-js/core",
-  "version": "18.0.3",
+  "version": "18.0.4",
   "description": "The easy internationalization (i18n) library for Angular",
   "repository": {
     "type": "git",
