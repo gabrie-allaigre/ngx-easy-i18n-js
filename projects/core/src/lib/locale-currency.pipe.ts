@@ -14,7 +14,7 @@ export class LocaleCurrencyPipe implements PipeTransform {
   ) {
   }
 
-  transform(value: number, format: string, currency: string, currencyCode?: string, digitsInfo?: string): string {
+  transform(value: number, currency: string, currencyCode?: string, digitsInfo?: string): string {
     return formatCurrency(value, this.easyI18nService.ngLocale ?? this.localeId, currency, currencyCode, digitsInfo);
   }
 }
