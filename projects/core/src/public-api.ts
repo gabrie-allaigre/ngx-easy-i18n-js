@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, ModuleWithProviders, NgModule, Provider } from '@angular/core';
+import { ModuleWithProviders, NgModule, Provider, inject, provideAppInitializer, EnvironmentProviders } from '@angular/core';
 import { LocaleDatePipe } from './lib/locale-date.pipe';
 import { LocaleNumberPipe } from './lib/locale-number.pipe';
 import { TrDirective } from './lib/tr.directive';
@@ -114,7 +114,7 @@ export class EasyI18nModule {
   }
 }
 
-export function provideEasyI18n(config: EasyI18nModuleConfig): Provider[] {
+export function provideEasyI18n(config: EasyI18nModuleConfig): Array<Provider | EnvironmentProviders> {
   return [
     config.loader || { provide: EasyI18nLoader, useClass: EmptyEasyI18nLoader },
     config.store || { provide: EasyI18nStore, useClass: EmptyEasyI18nStore },
@@ -125,14 +125,12 @@ export function provideEasyI18n(config: EasyI18nModuleConfig): Provider[] {
     { provide: FALLBACK_LANGUAGE, useValue: config.fallbackLanguage },
     { provide: DISCOVER, useValue: config.discover ?? 'all' },
     EasyI18nService,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: (easyI18nService: EasyI18nService) => {
+    provideAppInitializer(() => {
+      const initializerFn = ((easyI18nService: EasyI18nService) => {
         return async () =>
           easyI18nService.initialize()
-      },
-      deps: [EasyI18nService],
-      multi: true
-    }
+      })(inject(EasyI18nService));
+      return initializerFn();
+    })
   ];
 }
