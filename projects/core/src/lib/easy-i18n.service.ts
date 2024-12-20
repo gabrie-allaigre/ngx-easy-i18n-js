@@ -166,6 +166,15 @@ export class EasyI18nService {
   }
 
   /**
+   * Get plain message by key
+   *
+   * @param key key
+   */
+  public getPlainMessage(key: string): string | EasyI18nMessages | undefined {
+    return lodash.get(this.currentMsg, key);
+  }
+
+  /**
    * Change current culture
    *
    * @param culture new culture
