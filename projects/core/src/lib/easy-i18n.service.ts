@@ -174,6 +174,10 @@ export class EasyI18nService {
     return lodash.get(this.currentMsg, key);
   }
 
+  public getMessages(): EasyI18nMessages {
+    return this.currentMsg;
+  }
+
   /**
    * Change current culture
    *
