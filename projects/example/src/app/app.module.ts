@@ -7,7 +7,7 @@ import localeFr from '@angular/common/locales/fr';
 import localeEn from '@angular/common/locales/en';
 import { EasyI18nModule } from '@ngx-easy-i18n-js/core';
 import { EasyI18nBootstrapComponent } from '@ngx-easy-i18n-js/bootstrap';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideEasyI18nBootstrap } from '../../../bootstrap/src/public-api';
 import { provideEasyI18n } from '../../../core/src/public-api';
@@ -33,7 +33,7 @@ export const LANGUAGES: { code: string; ngLocale: any; flag: string; name: strin
     provideEasyI18nLoader({
       prefix: '/assets/i18n/'
     }),
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(withXhr(), withInterceptorsFromDi()),
     provideEasyI18n({
       options: {
         logging: false

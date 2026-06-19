@@ -2,16 +2,15 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
     "paths": {
       "@ngx-easy-i18n-js/bootstrap": [
-        "dist/bootstrap"
+        "./dist/bootstrap"
       ],
       "@ngx-easy-i18n-js/core": [
-        "dist/core"
+        "./dist/core"
       ],
       "@ngx-easy-i18n-js/loader": [
-        "dist/loader"
+        "./dist/loader"
       ]
     },
     "outDir": "./dist/out-tsc",
